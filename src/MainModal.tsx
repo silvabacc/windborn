@@ -8,7 +8,9 @@ import {
   Text,
   StyleSheet,
   NativeModules,
+  Image,
 } from 'react-native';
+import {useEffect, useState} from 'react';
 
 interface MainModalProps {
   intentData: ShareData;
@@ -16,6 +18,25 @@ interface MainModalProps {
 
 const MainModal: React.FC<MainModalProps> = ({intentData}) => {
   const {ExitModule} = NativeModules;
+  const {data} = intentData;
+
+  const [imageUrl, setImageUrl] = useState<string>();
+
+  useEffect(() => {
+    const fetchImageUrl = async () => {
+      const response = await fetch(data as string);
+      const html = await response.text();
+
+      const regex = /<meta property="og:image" content="([^"]+)"/i;
+      const matches = html.match(regex);
+
+      const url = matches?.[1];
+      setImageUrl(url?.replace(/&amp;/g, '&'));
+    };
+
+    fetchImageUrl();
+  }, [data]);
+
   return (
     <Modal animationType="fade" transparent={true}>
       <TouchableOpacity
@@ -23,11 +44,17 @@ const MainModal: React.FC<MainModalProps> = ({intentData}) => {
         style={styles.centeredView}
         onPressOut={() => {
           ExitModule.exitApp();
-          //https://reactnative.dev/docs/native-modules-android
         }}>
         <TouchableWithoutFeedback>
           <View style={styles.modalView}>
-            <Text style={styles.modalText}>Hello World!</Text>
+            {imageUrl ? (
+              <Image
+                source={{uri: imageUrl}}
+                style={{width: '100%', height: undefined, aspectRatio: 1}}
+              />
+            ) : (
+              <Text>Preparing preview...</Text>
+            )}
           </View>
         </TouchableWithoutFeedback>
       </TouchableOpacity>
@@ -44,7 +71,7 @@ const styles = StyleSheet.create({
   modalView: {
     backgroundColor: 'white',
     borderRadius: 20,
-    padding: 35,
+    padding: 15,
     alignItems: 'center',
     shadowColor: '#000',
     shadowOffset: {

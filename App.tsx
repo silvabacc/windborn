@@ -9,8 +9,7 @@ function App(): JSX.Element {
 
   useEffect(() => {
     ShareMenu.getInitialShare(data => setIntentData(data));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [JSON.stringify(intentData)]);
+  }, []);
 
   return <Windborn intentData={intentData} />;
 }

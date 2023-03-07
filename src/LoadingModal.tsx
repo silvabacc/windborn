@@ -6,6 +6,7 @@ import {
   View,
   Text,
   StyleSheet,
+  NativeModules,
 } from 'react-native';
 
 const LoadingModal: React.FC = () => {
@@ -14,7 +15,9 @@ const LoadingModal: React.FC = () => {
       <TouchableOpacity
         activeOpacity={1}
         style={styles.centeredView}
-        onPressOut={() => {}}>
+        onPressOut={() => {
+          NativeModules.ExitModule.exitApp();
+        }}>
         <TouchableWithoutFeedback>
           <View style={styles.modalView}>
             <Text style={styles.modalText}>Loading...</Text>

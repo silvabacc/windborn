@@ -9,14 +9,13 @@ interface WindbornProps {
 }
 
 const Windborn: React.FC<WindbornProps> = ({intentData}) => {
+  //in the future, prepare the data for image, video or gif?
   const isIntentDataNull = !intentData;
-
-  console.log(intentData);
 
   return (
     <View style={{backgroundColor: 'rgba(0, 0, 0, 0)', flex: 1}}>
       {!isIntentDataNull ? (
-        <MainModal intentData={intentData!} />
+        <MainModal intentData={intentData} />
       ) : (
         <LoadingModal />
       )}
