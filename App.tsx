@@ -1,26 +1,18 @@
-import React from 'react';
-import {Button, Modal, Text, View} from 'react-native';
+/* eslint-disable react-native/no-inline-styles */
+import React, {useEffect, useState} from 'react';
+
+import ShareMenu, {ShareData} from 'react-native-share-menu';
+import Windborn from './src/Windborn';
 
 function App(): JSX.Element {
-  return (
-    <View style={{backgroundColor: 'rgba(0, 0, 0, 0)', flex: 1}}>
-      <Modal animationType="slide" transparent={true} visible={true}>
-        <View
-          style={{
-            flex: 1,
-            alignItems: 'center',
-            justifyContent: 'center',
-            backgroundColor: 'rgba(0, 0, 0, 0.5)',
-          }}>
-          <View style={{padding: 20, backgroundColor: 'white'}}>
-            <Text style={{fontSize: 16, marginBottom: 10}}>Hello!</Text>
-            <Button title="Share" />
-            <Button title="Cancel" />
-          </View>
-        </View>
-      </Modal>
-    </View>
-  );
+  const [intentData, setIntentData] = useState<ShareData>();
+
+  useEffect(() => {
+    ShareMenu.getInitialShare(data => setIntentData(data));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [JSON.stringify(intentData)]);
+
+  return <Windborn intentData={intentData} />;
 }
 
 export default App;
