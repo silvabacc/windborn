@@ -22,8 +22,6 @@ const MainModal: React.FC<MainModalProps> = ({intentData}) => {
   const {ExitModule, ClipboardModule} = NativeModules;
   const {data} = intentData;
 
-  console.log(data);
-
   const [imageBase64, setImageBase64] = useState<string>();
 
   useEffect(() => {
@@ -34,18 +32,14 @@ const MainModal: React.FC<MainModalProps> = ({intentData}) => {
       const regex = /<meta property="og:image" content="([^"]+)"/i;
       const matches = html.match(regex);
 
-      const url = matches?.[1].replace(/&amp;/g, '&');
-      const imageResponse = await RNFetchBlob.fetch('GET', url as string);
+      const imageUrl = matches?.[1].replace(/&amp;/g, '&');
+      const imageResponse = await RNFetchBlob.fetch('GET', imageUrl as string);
       const imageData = await imageResponse.base64();
       setImageBase64(imageData);
     };
 
     fetchImageBase64();
   }, [data]);
-
-  const saveImageToClipboard = async () => {
-    ClipboardModule.copyBase64(imageBase64);
-  };
 
   return (
     <Modal animationType="fade" transparent={true}>
@@ -61,12 +55,14 @@ const MainModal: React.FC<MainModalProps> = ({intentData}) => {
               <>
                 <Image
                   source={{uri: `data:image/png;base64,${imageBase64}`}}
-                  style={{width: '100%', height: undefined, aspectRatio: 1}}
+                  style={styles.image}
                 />
                 <View style={styles.buttonContainer}>
                   <Button
                     title="Copy"
-                    onPress={async () => await saveImageToClipboard()}
+                    onPress={async () => {
+                      ClipboardModule.copyBase64(imageBase64);
+                    }}
                   />
                   <Button title="Cancel" onPress={() => ExitModule.exitApp()} />
                 </View>
@@ -110,6 +106,11 @@ const styles = StyleSheet.create({
   },
   button: {
     width: '50%',
+  },
+  image: {
+    width: '100%',
+    height: undefined,
+    aspectRatio: 1,
   },
 });
 

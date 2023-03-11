@@ -1,6 +1,6 @@
 import React from 'react';
 import {ShareData} from 'react-native-share-menu';
-import {View} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import LoadingModal from './LoadingModal';
 import MainModal from './MainModal';
 
@@ -13,7 +13,7 @@ const Windborn: React.FC<WindbornProps> = ({intentData}) => {
   const isIntentDataNull = !intentData;
 
   return (
-    <View style={{backgroundColor: 'rgba(0, 0, 0, 0)', flex: 1}}>
+    <View style={styles.appContainer}>
       {!isIntentDataNull ? (
         <MainModal intentData={intentData} />
       ) : (
@@ -22,5 +22,12 @@ const Windborn: React.FC<WindbornProps> = ({intentData}) => {
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  appContainer: {
+    backgroundColor: 'rgba(0, 0, 0, 0)',
+    flex: 1,
+  },
+});
 
 export default Windborn;
