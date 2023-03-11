@@ -11,31 +11,41 @@ import {
   Image,
 } from 'react-native';
 import {useEffect, useState} from 'react';
+import Button from './Button';
+import RNFetchBlob from 'rn-fetch-blob';
 
 interface MainModalProps {
   intentData: ShareData;
 }
 
 const MainModal: React.FC<MainModalProps> = ({intentData}) => {
-  const {ExitModule} = NativeModules;
+  const {ExitModule, ClipboardModule} = NativeModules;
   const {data} = intentData;
 
-  const [imageUrl, setImageUrl] = useState<string>();
+  console.log(data);
+
+  const [imageBase64, setImageBase64] = useState<string>();
 
   useEffect(() => {
-    const fetchImageUrl = async () => {
+    const fetchImageBase64 = async () => {
       const response = await fetch(data as string);
       const html = await response.text();
 
       const regex = /<meta property="og:image" content="([^"]+)"/i;
       const matches = html.match(regex);
 
-      const url = matches?.[1];
-      setImageUrl(url?.replace(/&amp;/g, '&'));
+      const url = matches?.[1].replace(/&amp;/g, '&');
+      const imageResponse = await RNFetchBlob.fetch('GET', url as string);
+      const imageData = await imageResponse.base64();
+      setImageBase64(imageData);
     };
 
-    fetchImageUrl();
+    fetchImageBase64();
   }, [data]);
+
+  const saveImageToClipboard = async () => {
+    ClipboardModule.copyBase64(imageBase64);
+  };
 
   return (
     <Modal animationType="fade" transparent={true}>
@@ -47,11 +57,20 @@ const MainModal: React.FC<MainModalProps> = ({intentData}) => {
         }}>
         <TouchableWithoutFeedback>
           <View style={styles.modalView}>
-            {imageUrl ? (
-              <Image
-                source={{uri: imageUrl}}
-                style={{width: '100%', height: undefined, aspectRatio: 1}}
-              />
+            {imageBase64 ? (
+              <>
+                <Image
+                  source={{uri: `data:image/png;base64,${imageBase64}`}}
+                  style={{width: '100%', height: undefined, aspectRatio: 1}}
+                />
+                <View style={styles.buttonContainer}>
+                  <Button
+                    title="Copy"
+                    onPress={async () => await saveImageToClipboard()}
+                  />
+                  <Button title="Cancel" onPress={() => ExitModule.exitApp()} />
+                </View>
+              </>
             ) : (
               <Text>Preparing preview...</Text>
             )}
@@ -82,25 +101,15 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 5,
   },
+  buttonContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    width: '100%',
+    marginTop: 16,
+    justifyContent: 'space-evenly',
+  },
   button: {
-    borderRadius: 20,
-    padding: 10,
-    elevation: 2,
-  },
-  buttonOpen: {
-    backgroundColor: '#F194FF',
-  },
-  buttonClose: {
-    backgroundColor: '#2196F3',
-  },
-  textStyle: {
-    color: 'white',
-    fontWeight: 'bold',
-    textAlign: 'center',
-  },
-  modalText: {
-    marginBottom: 15,
-    textAlign: 'center',
+    width: '50%',
   },
 });
 

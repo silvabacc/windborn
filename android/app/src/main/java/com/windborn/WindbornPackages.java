@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class ExitPackage implements ReactPackage {
+public class WindbornPackages implements ReactPackage {
 
    @Override
    public List<ViewManager> createViewManagers(ReactApplicationContext reactContext) {
@@ -22,6 +22,7 @@ public class ExitPackage implements ReactPackage {
        List<NativeModule> modules = new ArrayList<>();
 
        modules.add(new ExitModule(reactContext));
+       modules.add(new ClipboardModule(reactContext));
 
        return modules;
    }
