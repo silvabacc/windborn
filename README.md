@@ -1,5 +1,5 @@
 # Windborn
-<img height=250 width="100%" alt="banner" src="https://user-images.githubusercontent.com/47926269/224542662-ab3568e0-8179-4978-bd55-9e8938dbe501.png">
+<img alt="banner" src="https://user-images.githubusercontent.com/47926269/224542662-ab3568e0-8179-4978-bd55-9e8938dbe501.png">
 
 Allows you to copy images from Reddit posts to your clipboard. The offical Reddit mobile application does not support copying images to clipboard, instead, if users want to share a image from a post, they would have to download the image to their device's gallery. 
 
