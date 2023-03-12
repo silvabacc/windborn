@@ -14,19 +14,31 @@ const MainModal: React.FC<MainModalProps> = ({intentData}) => {
   const {data} = intentData;
 
   const [imageBase64, setImageBase64] = useState<string>();
+  const [error, setError] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchImageBase64 = async () => {
-      const response = await fetch(data as string);
-      const html = await response.text();
+      try {
+        const response = await fetch(data as string);
+        const html = await response.text();
 
-      const regex = /<meta property="og:image" content="([^"]+)"/i;
-      const matches = html.match(regex);
+        const regexForStandardPosts =
+          /<meta property="og:image" content="([^"]+)"/i;
+        const regexForSlidePosts = /<img\s+src="([^"]*)"/i;
 
-      const imageUrl = matches?.[1].replace(/&amp;/g, '&');
-      const imageResponse = await RNFetchBlob.fetch('GET', imageUrl as string);
-      const imageData = await imageResponse.base64();
-      setImageBase64(imageData);
+        const matches =
+          html.match(regexForStandardPosts) || html.match(regexForSlidePosts);
+
+        const imageUrl = matches?.[1].replace(/&amp;/g, '&');
+        const imageResponse = await RNFetchBlob.fetch(
+          'GET',
+          imageUrl as string,
+        );
+        const imageData = await imageResponse.base64();
+        setImageBase64(imageData);
+      } catch (error) {
+        setError(true);
+      }
     };
 
     fetchImageBase64();
@@ -49,8 +61,10 @@ const MainModal: React.FC<MainModalProps> = ({intentData}) => {
             />
           </View>
         </>
-      ) : (
+      ) : !error ? (
         <Text>Preparing preview...</Text>
+      ) : (
+        <Text>Something went wrong</Text>
       )}
     </>
   );
