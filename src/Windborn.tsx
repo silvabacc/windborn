@@ -1,8 +1,9 @@
 import React from 'react';
 import {ShareData} from 'react-native-share-menu';
 import {StyleSheet, View} from 'react-native';
-import LoadingModal from './LoadingModal';
+import HomeContent from './HomeContent';
 import MainModal from './MainModal';
+import WindbornModal from './WindbornModal';
 
 interface WindbornProps {
   intentData?: ShareData;
@@ -15,9 +16,9 @@ const Windborn: React.FC<WindbornProps> = ({intentData}) => {
   return (
     <View style={styles.appContainer}>
       {!isIntentDataNull ? (
-        <MainModal intentData={intentData} />
+        <WindbornModal content={<MainModal intentData={intentData} />} />
       ) : (
-        <LoadingModal />
+        <WindbornModal content={<HomeContent />} />
       )}
     </View>
   );

@@ -1,15 +1,6 @@
 /* eslint-disable react/react-in-jsx-scope */
 import {ShareData} from 'react-native-share-menu';
-import {
-  Modal,
-  TouchableOpacity,
-  TouchableWithoutFeedback,
-  View,
-  Text,
-  StyleSheet,
-  NativeModules,
-  Image,
-} from 'react-native';
+import {View, Text, StyleSheet, NativeModules, Image} from 'react-native';
 import {useEffect, useState} from 'react';
 import Button from './Button';
 import RNFetchBlob from 'rn-fetch-blob';
@@ -19,7 +10,7 @@ interface MainModalProps {
 }
 
 const MainModal: React.FC<MainModalProps> = ({intentData}) => {
-  const {ExitModule, ClipboardModule} = NativeModules;
+  const {ClipboardModule} = NativeModules;
   const {data} = intentData;
 
   const [imageBase64, setImageBase64] = useState<string>();
@@ -42,61 +33,30 @@ const MainModal: React.FC<MainModalProps> = ({intentData}) => {
   }, [data]);
 
   return (
-    <Modal animationType="fade" transparent={true}>
-      <TouchableOpacity
-        activeOpacity={1}
-        style={styles.centeredView}
-        onPressOut={() => {
-          ExitModule.exitApp();
-        }}>
-        <TouchableWithoutFeedback>
-          <View style={styles.modalView}>
-            {imageBase64 ? (
-              <>
-                <Image
-                  source={{uri: `data:image/png;base64,${imageBase64}`}}
-                  style={styles.image}
-                />
-                <View style={styles.buttonContainer}>
-                  <Button
-                    title="Copy"
-                    onPress={async () => {
-                      ClipboardModule.copyBase64(imageBase64);
-                    }}
-                  />
-                  <Button title="Cancel" onPress={() => ExitModule.exitApp()} />
-                </View>
-              </>
-            ) : (
-              <Text>Preparing preview...</Text>
-            )}
+    <>
+      {imageBase64 ? (
+        <>
+          <Image
+            source={{uri: `data:image/png;base64,${imageBase64}`}}
+            style={styles.image}
+          />
+          <View style={styles.buttonContainer}>
+            <Button
+              title="Copy to Clipboard"
+              onPress={async () => {
+                ClipboardModule.copyBase64(imageBase64);
+              }}
+            />
           </View>
-        </TouchableWithoutFeedback>
-      </TouchableOpacity>
-    </Modal>
+        </>
+      ) : (
+        <Text>Preparing preview...</Text>
+      )}
+    </>
   );
 };
 
 const styles = StyleSheet.create({
-  centeredView: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  modalView: {
-    backgroundColor: 'white',
-    borderRadius: 20,
-    padding: 15,
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
-  },
   buttonContainer: {
     display: 'flex',
     flexDirection: 'row',
@@ -111,6 +71,7 @@ const styles = StyleSheet.create({
     width: '100%',
     height: undefined,
     aspectRatio: 1,
+    borderRadius: 10,
   },
 });
 

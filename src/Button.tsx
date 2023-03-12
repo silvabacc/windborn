@@ -23,7 +23,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     lineHeight: 21,
     letterSpacing: 0.25,
-    color: '#6B2D5C',
+    color: 'black',
   },
 });
 

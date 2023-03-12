@@ -3,13 +3,16 @@ import {
   Modal,
   TouchableOpacity,
   TouchableWithoutFeedback,
-  View,
-  Text,
   StyleSheet,
   NativeModules,
+  View,
 } from 'react-native';
 
-const LoadingModal: React.FC = () => {
+interface WindbornModalProps {
+  content: React.ReactElement;
+}
+
+const WindbornModal: React.FC<WindbornModalProps> = ({content}) => {
   return (
     <Modal animationType="fade" transparent={true}>
       <TouchableOpacity
@@ -19,9 +22,7 @@ const LoadingModal: React.FC = () => {
           NativeModules.ExitModule.exitApp();
         }}>
         <TouchableWithoutFeedback>
-          <View style={styles.modalView}>
-            <Text style={styles.modalText}>Loading...</Text>
-          </View>
+          <View style={styles.modalView}>{content}</View>
         </TouchableWithoutFeedback>
       </TouchableOpacity>
     </Modal>
@@ -37,7 +38,7 @@ const styles = StyleSheet.create({
   modalView: {
     backgroundColor: 'white',
     borderRadius: 20,
-    padding: 35,
+    padding: 20,
     alignItems: 'center',
     shadowColor: '#000',
     shadowOffset: {
@@ -48,26 +49,6 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 5,
   },
-  button: {
-    borderRadius: 20,
-    padding: 10,
-    elevation: 2,
-  },
-  buttonOpen: {
-    backgroundColor: '#F194FF',
-  },
-  buttonClose: {
-    backgroundColor: '#2196F3',
-  },
-  textStyle: {
-    color: 'white',
-    fontWeight: 'bold',
-    textAlign: 'center',
-  },
-  modalText: {
-    marginBottom: 15,
-    textAlign: 'center',
-  },
 });
 
-export default LoadingModal;
+export default WindbornModal;
