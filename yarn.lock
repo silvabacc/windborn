@@ -1178,11 +1178,11 @@
     strip-ansi "^6.0.0"
 
 "@jest/create-cache-key-function@^29.2.1":
-  version "29.4.3"
-  resolved "https://registry.yarnpkg.com/@jest/create-cache-key-function/-/create-cache-key-function-29.4.3.tgz#ea37769f69523019d81ee089a25a62550f209eb7"
-  integrity sha512-AJVFQTTy6jnZAQiAZrdOaTAPzJUrvAE/4IMe+Foav6WPhypFszqg7a4lOTyuzYQEEiT5RSrGYg9IY+/ivxiyXw==
+  version "29.5.0"
+  resolved "https://registry.yarnpkg.com/@jest/create-cache-key-function/-/create-cache-key-function-29.5.0.tgz#24e019d03e634be4affe8bcee787d75a36ae57a2"
+  integrity sha512-LIDZyZgnZss7uikvBKBB/USWwG+GO8+GnwRWT+YkCGDGsqLQlhm9BC3z6+7+eMs1kUlvXQIWEzBR8Q2Pnvx6lg==
   dependencies:
-    "@jest/types" "^29.4.3"
+    "@jest/types" "^29.5.0"
 
 "@jest/environment@^29.4.3":
   version "29.4.3"
@@ -1193,6 +1193,16 @@
     "@jest/types" "^29.4.3"
     "@types/node" "*"
     jest-mock "^29.4.3"
+
+"@jest/environment@^29.5.0":
+  version "29.5.0"
+  resolved "https://registry.yarnpkg.com/@jest/environment/-/environment-29.5.0.tgz#9152d56317c1fdb1af389c46640ba74ef0bb4c65"
+  integrity sha512-5FXw2+wD29YU1d4I2htpRX7jYnAyTRjP2CsXQdo9SAM8g3ifxWPSV0HnClSn71xwctr0U3oZIIH+dtbfmnbXVQ==
+  dependencies:
+    "@jest/fake-timers" "^29.5.0"
+    "@jest/types" "^29.5.0"
+    "@types/node" "*"
+    jest-mock "^29.5.0"
 
 "@jest/expect-utils@^29.4.3":
   version "29.4.3"
@@ -1220,6 +1230,18 @@
     jest-message-util "^29.4.3"
     jest-mock "^29.4.3"
     jest-util "^29.4.3"
+
+"@jest/fake-timers@^29.5.0":
+  version "29.5.0"
+  resolved "https://registry.yarnpkg.com/@jest/fake-timers/-/fake-timers-29.5.0.tgz#d4d09ec3286b3d90c60bdcd66ed28d35f1b4dc2c"
+  integrity sha512-9ARvuAAQcBwDAqOnglWq2zwNIRUDtk/SCkp/ToGEhFv5r86K21l+VEs0qNTaXtyiY0lEePl3kylijSYJQqdbDg==
+  dependencies:
+    "@jest/types" "^29.5.0"
+    "@sinonjs/fake-timers" "^10.0.2"
+    "@types/node" "*"
+    jest-message-util "^29.5.0"
+    jest-mock "^29.5.0"
+    jest-util "^29.5.0"
 
 "@jest/globals@^29.4.3":
   version "29.4.3"
@@ -1344,6 +1366,18 @@
   version "29.4.3"
   resolved "https://registry.yarnpkg.com/@jest/types/-/types-29.4.3.tgz#9069145f4ef09adf10cec1b2901b2d390031431f"
   integrity sha512-bPYfw8V65v17m2Od1cv44FH+SiKW7w2Xu7trhcdTLUmSv85rfKsP+qXSjO4KGJr4dtPSzl/gvslZBXctf1qGEA==
+  dependencies:
+    "@jest/schemas" "^29.4.3"
+    "@types/istanbul-lib-coverage" "^2.0.0"
+    "@types/istanbul-reports" "^3.0.0"
+    "@types/node" "*"
+    "@types/yargs" "^17.0.8"
+    chalk "^4.0.0"
+
+"@jest/types@^29.5.0":
+  version "29.5.0"
+  resolved "https://registry.yarnpkg.com/@jest/types/-/types-29.5.0.tgz#f59ef9b031ced83047c67032700d8c807d6e1593"
+  integrity sha512-qbu7kN6czmVRc3xWFQcAN03RAUamgppVUdXrvl1Wr3jlNF93o9mJbGcDWrwGB6ht44u7efB1qCFgVQmca24Uog==
   dependencies:
     "@jest/schemas" "^29.4.3"
     "@types/istanbul-lib-coverage" "^2.0.0"
@@ -1778,6 +1812,11 @@
   version "15.7.5"
   resolved "https://registry.yarnpkg.com/@types/prop-types/-/prop-types-15.7.5.tgz#5f19d2b85a98e9558036f6a3cacc8819420f05cf"
   integrity sha512-JCB8C6SnDoQf0cNycqd/35A7MjcnK+ZTqE7judS6o7utxUCg6imJg3QK2qzHKszlTjcj2cn+NwMB2i96ubpj7w==
+
+"@types/react-native-share-menu@^5.0.2":
+  version "5.0.2"
+  resolved "https://registry.yarnpkg.com/@types/react-native-share-menu/-/react-native-share-menu-5.0.2.tgz#c9c8854a3d091cdb046df22dafe4a92332b322f3"
+  integrity sha512-Qa9DGfL6Bvng2DXgCK0fFzdi9SJMGfs06MLSkCfSXBCGKlFLzSHCsXztvXlCCChn3dQArFHyz/uRUN3Sbt6LtQ==
 
 "@types/react-test-renderer@^18.0.0":
   version "18.0.0"
@@ -2265,6 +2304,11 @@ balanced-match@^1.0.0:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/balanced-match/-/balanced-match-1.0.2.tgz#e83e3a7e3f300b34cb9d87f615fa0cbf357690ee"
   integrity sha512-3oSeUO0TMV67hN1AmbXsK4yaqU7tjiHlbxRDZOpH0KW9+CeX4bRAaX0Anxt0tx2MrpRpWwQaPwIlISEJhYU5Pw==
+
+base-64@0.1.0:
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/base-64/-/base-64-0.1.0.tgz#780a99c84e7d600260361511c4877613bf24f6bb"
+  integrity sha512-Y5gU45svrR5tI2Vt/X9GPd3L0HNIKzGu202EjxrXMpuc2V2CiKgemAbUUsqYmZJvPtCXoUKjNZwBJzsNScUbXA==
 
 base64-js@^1.1.2, base64-js@^1.3.1:
   version "1.5.1"
@@ -3537,6 +3581,18 @@ glob-parent@^6.0.2:
   dependencies:
     is-glob "^4.0.3"
 
+glob@7.0.6:
+  version "7.0.6"
+  resolved "https://registry.yarnpkg.com/glob/-/glob-7.0.6.tgz#211bafaf49e525b8cd93260d14ab136152b3f57a"
+  integrity sha512-f8c0rE8JiCxpa52kWPAOa3ZaYEnzofDzCQLCn3Vdk0Z5OVLq3BsRFJI4S4ykpeVW6QMGBUkMeUpoEgWnMTnw5Q==
+  dependencies:
+    fs.realpath "^1.0.0"
+    inflight "^1.0.4"
+    inherits "2"
+    minimatch "^3.0.2"
+    once "^1.3.0"
+    path-is-absolute "^1.0.0"
+
 glob@^7.1.3, glob@^7.1.4:
   version "7.2.3"
   resolved "https://registry.yarnpkg.com/glob/-/glob-7.2.3.tgz#b8df0fb802bbfa8e89bd1d938b4e16578ed44f2b"
@@ -4219,7 +4275,19 @@ jest-each@^29.4.3:
     jest-util "^29.4.3"
     pretty-format "^29.4.3"
 
-jest-environment-node@^29.2.1, jest-environment-node@^29.4.3:
+jest-environment-node@^29.2.1:
+  version "29.5.0"
+  resolved "https://registry.yarnpkg.com/jest-environment-node/-/jest-environment-node-29.5.0.tgz#f17219d0f0cc0e68e0727c58b792c040e332c967"
+  integrity sha512-ExxuIK/+yQ+6PRGaHkKewYtg6hto2uGCgvKdb2nfJfKXgZ17DfXjvbZ+jA1Qt9A8EQSfPnt5FKIfnOO3u1h9qw==
+  dependencies:
+    "@jest/environment" "^29.5.0"
+    "@jest/fake-timers" "^29.5.0"
+    "@jest/types" "^29.5.0"
+    "@types/node" "*"
+    jest-mock "^29.5.0"
+    jest-util "^29.5.0"
+
+jest-environment-node@^29.4.3:
   version "29.4.3"
   resolved "https://registry.yarnpkg.com/jest-environment-node/-/jest-environment-node-29.4.3.tgz#579c4132af478befc1889ddc43c2413a9cdbe014"
   integrity sha512-gAiEnSKF104fsGDXNkwk49jD/0N0Bqu2K9+aMQXA6avzsA9H3Fiv1PW2D+gzbOSR705bWd2wJZRFEFpV0tXISg==
@@ -4293,6 +4361,21 @@ jest-message-util@^29.4.3:
     slash "^3.0.0"
     stack-utils "^2.0.3"
 
+jest-message-util@^29.5.0:
+  version "29.5.0"
+  resolved "https://registry.yarnpkg.com/jest-message-util/-/jest-message-util-29.5.0.tgz#1f776cac3aca332ab8dd2e3b41625435085c900e"
+  integrity sha512-Kijeg9Dag6CKtIDA7O21zNTACqD5MD/8HfIV8pdD94vFyFuer52SigdC3IQMhab3vACxXMiFk+yMHNdbqtyTGA==
+  dependencies:
+    "@babel/code-frame" "^7.12.13"
+    "@jest/types" "^29.5.0"
+    "@types/stack-utils" "^2.0.0"
+    chalk "^4.0.0"
+    graceful-fs "^4.2.9"
+    micromatch "^4.0.4"
+    pretty-format "^29.5.0"
+    slash "^3.0.0"
+    stack-utils "^2.0.3"
+
 jest-mock@^29.4.3:
   version "29.4.3"
   resolved "https://registry.yarnpkg.com/jest-mock/-/jest-mock-29.4.3.tgz#23d84a20a74cdfff0510fdbeefb841ed57b0fe7e"
@@ -4301,6 +4384,15 @@ jest-mock@^29.4.3:
     "@jest/types" "^29.4.3"
     "@types/node" "*"
     jest-util "^29.4.3"
+
+jest-mock@^29.5.0:
+  version "29.5.0"
+  resolved "https://registry.yarnpkg.com/jest-mock/-/jest-mock-29.5.0.tgz#26e2172bcc71d8b0195081ff1f146ac7e1518aed"
+  integrity sha512-GqOzvdWDE4fAV2bWQLQCkujxYWL7RxjCnj71b5VhDAGOevB3qj3Ovg26A5NI84ZpODxyzaozXLOh2NCgkbvyaw==
+  dependencies:
+    "@jest/types" "^29.5.0"
+    "@types/node" "*"
+    jest-util "^29.5.0"
 
 jest-pnp-resolver@^1.2.2:
   version "1.2.3"
@@ -4451,6 +4543,18 @@ jest-util@^29.4.3:
   integrity sha512-ToSGORAz4SSSoqxDSylWX8JzkOQR7zoBtNRsA7e+1WUX5F8jrOwaNpuh1YfJHJKDHXLHmObv5eOjejUd+/Ws+Q==
   dependencies:
     "@jest/types" "^29.4.3"
+    "@types/node" "*"
+    chalk "^4.0.0"
+    ci-info "^3.2.0"
+    graceful-fs "^4.2.9"
+    picomatch "^2.2.3"
+
+jest-util@^29.5.0:
+  version "29.5.0"
+  resolved "https://registry.yarnpkg.com/jest-util/-/jest-util-29.5.0.tgz#24a4d3d92fc39ce90425311b23c27a6e0ef16b8f"
+  integrity sha512-RYMgG/MTadOr5t8KdhejfvUU82MxsCu5MF6KuDUHl+NuwzUt+Sm6jJWxTJVrDR1j5M/gJVCPKQEpWXY+yIQ6lQ==
+  dependencies:
+    "@jest/types" "^29.5.0"
     "@types/node" "*"
     chalk "^4.0.0"
     ci-info "^3.2.0"
@@ -5745,6 +5849,15 @@ pretty-format@^29.0.0, pretty-format@^29.4.3:
     ansi-styles "^5.0.0"
     react-is "^18.0.0"
 
+pretty-format@^29.5.0:
+  version "29.5.0"
+  resolved "https://registry.yarnpkg.com/pretty-format/-/pretty-format-29.5.0.tgz#283134e74f70e2e3e7229336de0e4fce94ccde5a"
+  integrity sha512-V2mGkI31qdttvTFX7Mt4efOqHXqJWMu4/r66Xh3Z3BwZaPfPJgp6/gbwoujRpPUtfEF6AUUWx3Jim3GCw5g/Qw==
+  dependencies:
+    "@jest/schemas" "^29.4.3"
+    ansi-styles "^5.0.0"
+    react-is "^18.0.0"
+
 process-nextick-args@~2.0.0:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/process-nextick-args/-/process-nextick-args-2.0.1.tgz#7820d9b16120cc55ca9ae7792680ae7dba6d7fe2"
@@ -5831,9 +5944,14 @@ react-native-codegen@^0.71.5:
     nullthrows "^1.1.1"
 
 react-native-gradle-plugin@^0.71.15:
-  version "0.71.15"
-  resolved "https://registry.yarnpkg.com/react-native-gradle-plugin/-/react-native-gradle-plugin-0.71.15.tgz#9e6b506f30729fe8eb086981702f4e3c891d2b13"
-  integrity sha512-7S3pAuPaQJlhax6EZ4JMsDNpj05TfuzX9gPgWLrFfAIWIFLuJ6aDQYAZy2TEI9QJALPoWrj8LWaqP/DGYh14pw==
+  version "0.71.16"
+  resolved "https://registry.yarnpkg.com/react-native-gradle-plugin/-/react-native-gradle-plugin-0.71.16.tgz#822bb0c680e03b5df5aa65f2e5ffc2bc2930854a"
+  integrity sha512-H2BjG2zk7B7Wii9sXvd9qhCVRQYDAHSWdMw9tscmZBqSP62DkIWEQSk4/B2GhQ4aK9ydVXgtqR6tBeg3yy8TSA==
+
+react-native-share-menu@^6.0.0:
+  version "6.0.0"
+  resolved "https://registry.yarnpkg.com/react-native-share-menu/-/react-native-share-menu-6.0.0.tgz#0398dd4537ca1138b774fcbff9b05a88c8329cf6"
+  integrity sha512-KdmRnqjI/B2MigSxGmhbYJ3WMJxKXj+0c47ANcVZ/PTzc2vtz6d1r4KQJgkBImXgNC+vowpuD2UGdPllxadr2A==
 
 react-native@0.71.3:
   version "0.71.3"
@@ -6112,6 +6230,14 @@ rimraf@~2.6.2:
   integrity sha512-mwqeW5XsA2qAejG46gYdENaxXjx9onRNCfn7L0duuP4hCuTIi/QO7PDK07KJfp1d+izWPrzEJDcSqBa0OZQriA==
   dependencies:
     glob "^7.1.3"
+
+rn-fetch-blob@^0.12.0:
+  version "0.12.0"
+  resolved "https://registry.yarnpkg.com/rn-fetch-blob/-/rn-fetch-blob-0.12.0.tgz#ec610d2f9b3f1065556b58ab9c106eeb256f3cba"
+  integrity sha512-+QnR7AsJ14zqpVVUbzbtAjq0iI8c9tCg49tIoKO2ezjzRunN7YL6zFSFSWZm6d+mE/l9r+OeDM3jmb2tBb2WbA==
+  dependencies:
+    base-64 "0.1.0"
+    glob "7.0.6"
 
 run-parallel@^1.1.9:
   version "1.2.0"
