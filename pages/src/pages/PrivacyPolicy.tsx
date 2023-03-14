@@ -27,7 +27,7 @@ const PrivacyPolicy: React.FC = () => {
       </p>
       <p>
         If you have any questions about our Privacy Policy, please contact at
-        <span style={{fontWeight: 'bold'}}> bavernaz@gmail.com</span>.
+        <span style={{fontWeight: 'bold'}}> windborn_app@protonmail.com</span>.
       </p>
       <p>
         This privacy policy is effective as of{' '}
