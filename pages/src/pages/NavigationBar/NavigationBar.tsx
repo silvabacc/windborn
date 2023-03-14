@@ -8,7 +8,7 @@ const NavigationBar: React.FC = () => {
   return (
     <Navbar fixed="top" collapseOnSelect expand="sm" bg="black">
       <Container className="navigation-container">
-        <Navbar.Brand href="#home">
+        <Navbar.Brand>
           <img className="logo" alt="logo" src={require('./logo.png')} />
         </Navbar.Brand>
 
@@ -21,7 +21,6 @@ const NavigationBar: React.FC = () => {
             {[
               {href: '/windborn/#Home', label: 'Home'},
               {href: '/windborn/#Privacy', label: 'Privacy'},
-              {href: '/windborn/#Contact', label: 'Contact'},
             ].map(tab => (
               <Nav.Link
                 className="navigation-link"
