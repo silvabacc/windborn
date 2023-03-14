@@ -1,16 +1,16 @@
 {
   "files": {
     "main.css": "/windborn/static/css/main.45461dd1.css",
-    "main.js": "/windborn/static/js/main.ea08c520.js",
+    "main.js": "/windborn/static/js/main.a8533892.js",
     "static/js/787.b958806f.chunk.js": "/windborn/static/js/787.b958806f.chunk.js",
     "static/media/logo.png": "/windborn/static/media/logo.8ec6bf5f31c45c5b0d33.png",
     "index.html": "/windborn/index.html",
     "main.45461dd1.css.map": "/windborn/static/css/main.45461dd1.css.map",
-    "main.ea08c520.js.map": "/windborn/static/js/main.ea08c520.js.map",
+    "main.a8533892.js.map": "/windborn/static/js/main.a8533892.js.map",
     "787.b958806f.chunk.js.map": "/windborn/static/js/787.b958806f.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.45461dd1.css",
-    "static/js/main.ea08c520.js"
+    "static/js/main.a8533892.js"
   ]
 }
