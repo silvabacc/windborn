@@ -1,6 +1,5 @@
 import React, {useState} from 'react';
 import {Button, Modal} from 'react-bootstrap';
-import ReactPlayer from 'react-player';
 import './Home.css';
 
 const Home: React.FC = () => {
