@@ -1,25 +1,20 @@
-import {BrowserRouter, Routes, Route} from 'react-router-dom';
-import Home from './pages/Home';
 import NavigationBar from './pages/NavigationBar/NavigationBar';
-import PrivacyPolicy from './pages/PrivacyPolicy';
 import './App.css';
+import Home from './pages/Home';
+import PrivacyPolicy from './pages/PrivacyPolicy';
 import Contact from './pages/Contact';
+import {Container} from 'react-bootstrap';
 
 function App() {
   return (
-    <div className="page-wrapper">
+    <Container className="page-wrapper">
       <NavigationBar />
-      <BrowserRouter>
-        <Routes>
-          <Route path="/windborn">
-            <Route path="home" element={<Home />} />
-            <Route path="privacy" element={<PrivacyPolicy />} />
-            <Route path="contact" element={<Contact />} />
-            <Route path="" element={<Home />} />
-          </Route>
-        </Routes>
-      </BrowserRouter>
-    </div>
+      <Container className="page-container">
+        {[<Home />, <PrivacyPolicy />, <Contact />].map(component => (
+          <div className="page-content">{component}</div>
+        ))}
+      </Container>
+    </Container>
   );
 }
 
