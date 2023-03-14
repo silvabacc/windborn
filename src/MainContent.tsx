@@ -64,7 +64,7 @@ const MainModal: React.FC<MainModalProps> = ({intentData}) => {
       ) : !error ? (
         <Text>Preparing preview...</Text>
       ) : (
-        <Text>Something went wrong</Text>
+        <Text>Oops, this post doesn't seem to have any images</Text>
       )}
     </>
   );

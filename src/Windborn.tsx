@@ -10,7 +10,6 @@ interface WindbornProps {
 }
 
 const Windborn: React.FC<WindbornProps> = ({intentData}) => {
-  //in the future, prepare the data for image, video or gif?
   const isIntentDataNull = !intentData;
 
   return (
