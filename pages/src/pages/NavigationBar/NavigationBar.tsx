@@ -8,9 +8,9 @@ const NavigationBar: React.FC = () => {
       <img className="logo" alt="logo" src={require('./logo.png')} />
       <Nav activeKey="/home">
         {[
-          {href: '/home', label: 'Home'},
-          {href: '/privacy', label: 'Privacy'},
-          {href: '/contact', label: 'Contact'},
+          {href: '/windborn/home', label: 'Home'},
+          {href: '/windborn/privacy', label: 'Privacy'},
+          {href: '/windborn/contact', label: 'Contact'},
         ].map(tab => (
           <Nav.Item className="navigation-items">
             <Nav.Link className="navigation-link" href={tab.href}>

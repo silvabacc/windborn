@@ -1,7 +1,7 @@
 import React from 'react';
 
 const PrivacyPolicy: React.FC = () => {
-  return <>Privacy</>;
+  return <div>Privacy</div>;
 };
 
 export default PrivacyPolicy;
