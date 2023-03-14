@@ -1,8 +1,10 @@
 import React from 'react';
 import {Container, Nav, Navbar} from 'react-bootstrap';
+import {useLocomotiveScroll} from 'react-locomotive-scroll';
 import './NavigationBar.css';
 
 const NavigationBar: React.FC = () => {
+  const {scroll} = useLocomotiveScroll();
   return (
     <Navbar fixed="top" collapseOnSelect expand="sm" bg="black">
       <Container className="navigation-container">
@@ -21,7 +23,11 @@ const NavigationBar: React.FC = () => {
               {href: '/windborn/#Privacy', label: 'Privacy'},
               {href: '/windborn/#Contact', label: 'Contact'},
             ].map(tab => (
-              <Nav.Link className="navigation-link" href={tab.href}>
+              <Nav.Link
+                className="navigation-link"
+                onClick={() => {
+                  scroll.scrollTo(`#${tab.label}`, {offset: -200});
+                }}>
                 {tab.label}
               </Nav.Link>
             ))}

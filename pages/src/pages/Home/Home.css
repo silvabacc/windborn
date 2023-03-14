@@ -1,0 +1,17 @@
+.home-content {
+  display: flex;
+}
+
+.home-header {
+  font-size: 64px;
+}
+
+.home-buttons {
+  margin-top: 16px;
+  margin-right: 16px;
+}
+
+.home-image {
+  height: 450px;
+  width: 450px;
+}
