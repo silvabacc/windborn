@@ -1,0 +1,17 @@
+.navigation-container {
+  display: flex;
+}
+
+.navigation-items {
+  padding: 16px;
+}
+
+.navigation-link {
+  color: white !important;
+}
+
+.logo {
+  width: 200px;
+  height: 72px;
+  color: white;
+}
