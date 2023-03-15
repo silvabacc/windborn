@@ -18,7 +18,9 @@ const WindbornModal: React.FC<WindbornModalProps> = ({content}) => {
       <TouchableOpacity
         activeOpacity={1}
         style={styles.centeredView}
-        onPressOut={() => {
+        testID="modal-container"
+        onPress={() => {
+          console.log('pressed');
           NativeModules.ExitModule.exitApp();
         }}>
         <TouchableWithoutFeedback>
