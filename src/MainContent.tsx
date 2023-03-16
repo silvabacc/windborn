@@ -9,7 +9,7 @@ interface MainModalProps {
   intentData: ShareData;
 }
 
-const MainModal: React.FC<MainModalProps> = ({intentData}) => {
+const MainContent: React.FC<MainModalProps> = ({intentData}) => {
   const {ClipboardModule} = NativeModules;
   const {data} = intentData;
 
@@ -89,4 +89,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default MainModal;
+export default MainContent;

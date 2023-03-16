@@ -1,12 +1,7 @@
 import React from 'react';
 import WindbornModal from './WindbornModal';
-import {
-  fireEvent,
-  render,
-  screen,
-  waitFor,
-} from '@testing-library/react-native';
-import {NativeModules, Pressable, TouchableOpacity} from 'react-native';
+import {fireEvent, render, screen} from '@testing-library/react-native';
+import {NativeModules} from 'react-native';
 
 const mockExitApp = jest.fn();
 
