@@ -1,33 +1,29 @@
 import React, {useState} from 'react';
 import {Button, Modal} from 'react-bootstrap';
 import './Home.css';
+import HomeButton from './HomeButton';
+import playImage from './play.png';
+import githubImage from './github.png';
 
 const Home: React.FC = () => {
   const [show, setShow] = useState(false);
-
   return (
     <div id="Home" data-scroll-section className="home-content">
       <div>
         <div className="home-header">
           Copy images to your clipboard from Reddit posts
         </div>
-        <Button className="home-buttons" variant="dark">
+        <HomeButton
+          source={playImage}
+          href="https://play.google.com/store/apps/details?id=com.windborn">
           Get now
-        </Button>
-        <Button
-          className="home-buttons"
-          variant="dark"
-          onClick={() => setShow(true)}>
-          Watch Demo
-        </Button>
-        <Button
-          className="home-buttons"
-          variant="dark"
-          href="https://github.com/silvabacc/windborn"
-          target="_blank">
-          <img src={require('./github.png')} className="home-icon" />
+        </HomeButton>
+        <HomeButton onClick={() => setShow(true)}>Watch Demo</HomeButton>
+        <HomeButton
+          source={githubImage}
+          href="https://github.com/silvabacc/windborn">
           GitHub Link
-        </Button>
+        </HomeButton>
       </div>
       <img className="home-image" src={require('./man.png')} />
       <Modal show={show} onHide={() => setShow(false)}>

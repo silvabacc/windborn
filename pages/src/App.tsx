@@ -1,6 +1,6 @@
 import NavigationBar from './pages/NavigationBar/NavigationBar';
 import './App.css';
-import PrivacyPolicy from './pages/PrivacyPolicy';
+import PrivacyPolicy from './pages/PrivacyPolicy/PrivacyPolicy';
 import {Container} from 'react-bootstrap';
 import Home from './pages/Home/Home';
 import {LocomotiveScrollProvider} from 'react-locomotive-scroll';

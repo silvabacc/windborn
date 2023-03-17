@@ -1,8 +1,9 @@
 import React from 'react';
+import './PrivacyPolicy.css';
 
 const PrivacyPolicy: React.FC = () => {
   return (
-    <div id="Privacy" data-scroll-section>
+    <div className="privacy-policy-content" id="Privacy" data-scroll-section>
       <h1>Privacy Policy</h1>
       <p>
         We respect your privacy and are committed to protecting your personal
