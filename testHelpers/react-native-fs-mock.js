@@ -1,6 +1,7 @@
-let RNFetchBlob = jest.mock('react-native-fs');
+export const mockReadFile = jest.fn();
 
-RNFetchBlob.fetch = jest.fn();
-RNFetchBlob.wrap = jest.fn();
+const rnFsMock = {
+  readFile: mockReadFile,
+};
 
-export default {RNFetchBlob};
+export default rnFsMock;

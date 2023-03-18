@@ -11,6 +11,8 @@ export const fetchImageBase64 = async (data: string): Promise<string> => {
   const matches =
     html.match(regexForStandardPosts) || html.match(regexForSlidePosts);
 
+  console.log(matches);
+
   const imageUrl = matches?.[1].replace(/&amp;/g, '&');
   const imageResponse = await RNFetchBlob.fetch('GET', imageUrl as string);
   const imageData = await imageResponse.base64();

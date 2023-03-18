@@ -1,5 +1,7 @@
-let RNFetchBlob = jest.mock('rn-fetch-blob');
+export const mockFetch = jest.fn();
 
-RNFetchBlob.readFile = jest.fn();
+const rnFBMock = {
+  fetch: mockFetch,
+};
 
-export default {RNFetchBlob};
+export default rnFBMock;
