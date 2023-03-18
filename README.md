@@ -11,3 +11,49 @@ Once the image is saved to your clipboard, you can paste the image wherever you 
 Once the image is saved, you can paste it just like any other image/text. For example, we can see here that I have the option to paste this image on WhatsApp
 
 <img src="https://user-images.githubusercontent.com/47926269/224524928-618a2590-c25a-4fe5-8a22-c7f14af7c9f5.png" width="30%">
+
+# Running the App
+
+Windborn is a mobile app built with React Native. It requires an Android emulator or physical device to run. This guide will show you how to set up an emulator and run the app on your computer.
+
+Prerequisites
+
+Before you can run the app, you'll need to install the following software:
+
+* `Node.js`
+* `Yarn`
+
+You'll also need to set up an Android emulator or connect a physical device to your computer.
+
+## Setting up the emulator
+
+To set up an Android emulator, follow these steps:
+
+* Install [Android Studio](https://developer.android.com/studio).
+* Open Android Studio and select `AVD Manager` from the `Configure` menu.
+* Click `Create Virtual Device` and follow the prompts to create a new emulator.
+* Once the emulator is created, select it in the `AVD Manager` and click `Start`.
+
+## Setting up on a physical Android device
+
+If you don't want to run your application on an emulator, you can always use a physical device. 
+To run the app on a physical Android device, follow these steps:
+
+* Connect your device to your computer via USB cable.
+* Enable `USB Debugging` on your device by going to §Settings` > `Developer options` > `USB debugging.` (You will need to find a way to enable developer options for your specific android device. Ususally it's tapping the `Build Number` in `About Phone` section)
+* Make sure your device is detected by running the command adb devices in your terminal.
+
+### Troubleshoot
+You may also need to set `Default USB Configuration` to `File Transfer` if you've set up your physical Android advice and the application is still not being launched/installed
+
+## Running the app
+
+To run the app, follow these steps:
+
+* Clone this repository to your local machine.
+* Navigate to the project directory in your terminal.
+* Run `yarn install` to install the project dependencies.
+* Run `yarn start` to start the development server.
+* Run `yarn android` to build and run the app on your emulator or device.
+
+That's it! Your app should now be running on your emulator or device. If you encounter any issues or errors, refer to the React Native documentation or seek help from the community.
