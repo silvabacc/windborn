@@ -58,7 +58,7 @@ To run the app, follow these steps:
 
 That's it! Your app should now be running on your emulator or device. If you encounter any issues or errors, refer to the React Native documentation or seek help from the community.
 
-#Contribution
+# Contribution
 
 Contributions are always welcome! If you'd like to contribute to this project, please follow these steps:
 
