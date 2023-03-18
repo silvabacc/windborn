@@ -40,7 +40,7 @@ If you don't want to run your application on an emulator, you can always use a p
 To run the app on a physical Android device, follow these steps:
 
 * Connect your device to your computer via USB cable.
-* Enable `USB Debugging` on your device by going to §Settings` > `Developer options` > `USB debugging.` (You will need to find a way to enable developer options for your specific android device. Ususally it's tapping the `Build Number` in `About Phone` section)
+* Enable `USB Debugging` on your device by going to `Settings` > `Developer options` > `USB debugging`. (You will need to find a way to enable developer options for your specific android device. Ususally it's tapping the `Build Number` in `About Phone` section 10 times)
 * Make sure your device is detected by running the command adb devices in your terminal.
 
 ### Troubleshoot
