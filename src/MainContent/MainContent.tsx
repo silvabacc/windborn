@@ -1,9 +1,9 @@
-/* eslint-disable react/react-in-jsx-scope */
+import React from 'react';
 import {ShareData} from 'react-native-share-menu';
 import {View, Text, StyleSheet, NativeModules, Image} from 'react-native';
 import {useEffect, useState} from 'react';
-import Button from './Button';
-import RNFetchBlob from 'rn-fetch-blob';
+import Button from '../Common/Button';
+import {convertImageToBase64, fetchImageBase64} from './imageBase64';
 
 interface MainModalProps {
   intentData: ShareData;
@@ -17,37 +17,25 @@ const MainContent: React.FC<MainModalProps> = ({intentData}) => {
   const [error, setError] = useState<boolean>(false);
 
   useEffect(() => {
-    const fetchImageBase64 = async () => {
+    const getImageBase64 = async () => {
       try {
-        const response = await fetch(data as string);
-        const html = await response.text();
-
-        const regexForStandardPosts =
-          /<meta property="og:image" content="([^"]+)"/i;
-        const regexForSlidePosts = /<img\s+src="([^"]*)"/i;
-
-        const matches =
-          html.match(regexForStandardPosts) || html.match(regexForSlidePosts);
-
-        const imageUrl = matches?.[1].replace(/&amp;/g, '&');
-        const imageResponse = await RNFetchBlob.fetch(
-          'GET',
-          imageUrl as string,
-        );
-        const imageData = await imageResponse.base64();
-        setImageBase64(imageData);
+        const image = intentData.mimeType.includes('image')
+          ? await convertImageToBase64(data as string)
+          : await fetchImageBase64(data as string);
+        setImageBase64(image);
       } catch (error) {
         setError(true);
       }
     };
 
-    fetchImageBase64();
+    getImageBase64();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data]);
 
   return (
-    <>
+    <View testID="main-content-view">
       {imageBase64 ? (
-        <>
+        <View testID="clipboard-menu">
           <Image
             source={{uri: `data:image/png;base64,${imageBase64}`}}
             style={styles.image}
@@ -55,18 +43,16 @@ const MainContent: React.FC<MainModalProps> = ({intentData}) => {
           <View style={styles.buttonContainer}>
             <Button
               title="Copy to Clipboard"
-              onPress={async () => {
-                ClipboardModule.copyBase64(imageBase64);
-              }}
+              onPress={() => ClipboardModule.copyBase64(imageBase64)}
             />
           </View>
-        </>
+        </View>
       ) : !error ? (
         <Text>Preparing preview...</Text>
       ) : (
         <Text>Oops, this post doesn't seem to have any images</Text>
       )}
-    </>
+    </View>
   );
 };
 

@@ -8,7 +8,10 @@ interface ButtonProps {
 
 const Button: React.FC<ButtonProps> = ({title, onPress}) => {
   return (
-    <Pressable style={styles.button} onPress={onPress}>
+    <Pressable
+      testID="copy-clipboard-button"
+      style={styles.button}
+      onPress={onPress}>
       <Text style={styles.text}>{title}</Text>
     </Pressable>
   );
