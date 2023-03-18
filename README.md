@@ -57,3 +57,17 @@ To run the app, follow these steps:
 * Run `yarn android` to build and run the app on your emulator or device.
 
 That's it! Your app should now be running on your emulator or device. If you encounter any issues or errors, refer to the React Native documentation or seek help from the community.
+
+#Contribution
+
+Contributions are always welcome! If you'd like to contribute to this project, please follow these steps:
+
+* Fork this repository to your own account.
+* Create a new branch with a descriptive name (git checkout -b my-new-feature).
+* Make changes to the code, documentation, or other project files.
+* Commit your changes with a descriptive commit message (git commit -m 'Add some feature').
+* Push your changes to your forked repository (git push origin my-new-feature).
+* Submit a pull request to this repository with your changes.
+* Please make sure to follow the existing code style and conventions, and include unit tests for any new features or bug fixes.
+
+If you have any questions or issues, please don't hesitate to open an issue or reach out to the project maintainers for help. Thank you for your contributions!
