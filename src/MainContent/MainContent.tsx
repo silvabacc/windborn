@@ -1,6 +1,13 @@
 import React from 'react';
 import {ShareData} from 'react-native-share-menu';
-import {View, Text, StyleSheet, NativeModules, Image} from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  NativeModules,
+  Image,
+  ToastAndroid,
+} from 'react-native';
 import {useEffect, useState} from 'react';
 import Button from '../Common/Button';
 import {convertImageToBase64, fetchImageBase64} from './imageBase64';
@@ -43,7 +50,13 @@ const MainContent: React.FC<MainModalProps> = ({intentData}) => {
           <View style={styles.buttonContainer}>
             <Button
               title="Copy to Clipboard"
-              onPress={() => ClipboardModule.copyBase64(imageBase64)}
+              onPress={() => {
+                ToastAndroid.show(
+                  'Copied to your clipboard!',
+                  ToastAndroid.SHORT,
+                );
+                ClipboardModule.copyBase64(imageBase64);
+              }}
             />
           </View>
         </View>
