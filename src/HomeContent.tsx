@@ -1,5 +1,7 @@
 import React from 'react';
-import {Text, StyleSheet, Image} from 'react-native';
+import {Text, StyleSheet, NativeModules, PixelRatio} from 'react-native';
+import Video from 'react-native-video';
+import Button from './Common/Button';
 
 const HomeContent: React.FC = () => {
   return (
@@ -9,7 +11,17 @@ const HomeContent: React.FC = () => {
         You can copy images/videos to your clipboard via the share button on
         Reddit and selecting Windborn
       </Text>
-      <Image style={styles.image} source={require('./guide.png')} />
+      <Video
+        source={{uri: 'https://i.imgur.com/bS7Iw3v.mp4'}}
+        paused={false}
+        repeat={true}
+        resizeMode={'stretch'}
+        style={styles.video}
+      />
+      <Button
+        title="Close"
+        onPress={() => NativeModules.ExitModule.exitApp()}
+      />
     </>
   );
 };
@@ -28,6 +40,13 @@ const styles = StyleSheet.create({
     height: undefined,
     aspectRatio: 1.12,
     borderRadius: 10,
+  },
+  video: {
+    height: '70%',
+    aspectRatio: 0.6,
+    marginBottom: 50,
+    marginTop: 25,
+    borderRadius: 25,
   },
 });
 
