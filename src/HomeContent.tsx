@@ -1,11 +1,11 @@
 import React from 'react';
-import {Text, StyleSheet, NativeModules, PixelRatio} from 'react-native';
+import {Text, StyleSheet, NativeModules, View} from 'react-native';
 import Video from 'react-native-video';
 import Button from './Common/Button';
 
 const HomeContent: React.FC = () => {
   return (
-    <>
+    <View style={styles.modalContainer}>
       <Text style={[styles.modalText, styles.modalHeader]}>Windborn</Text>
       <Text style={styles.modalText}>
         You can copy images/videos to your clipboard via the share button on
@@ -22,11 +22,16 @@ const HomeContent: React.FC = () => {
         title="Close"
         onPress={() => NativeModules.ExitModule.exitApp()}
       />
-    </>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'space-evenly',
+    alignItems: 'center',
+  },
   modalHeader: {
     fontWeight: 'bold',
   },
@@ -44,9 +49,6 @@ const styles = StyleSheet.create({
   video: {
     height: '70%',
     aspectRatio: 0.6,
-    marginBottom: 50,
-    marginTop: 25,
-    borderRadius: 25,
   },
 });
 

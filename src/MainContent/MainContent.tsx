@@ -71,10 +71,8 @@ const MainContent: React.FC<MainModalProps> = ({intentData}) => {
 
 const styles = StyleSheet.create({
   buttonContainer: {
-    display: 'flex',
     flexDirection: 'row',
     width: '100%',
-    marginTop: 16,
     justifyContent: 'space-evenly',
   },
   button: {
