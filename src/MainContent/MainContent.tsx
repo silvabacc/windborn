@@ -11,6 +11,7 @@ import {
 import {useEffect, useState} from 'react';
 import Button from '../Common/Button';
 import {convertImageToBase64, fetchImageBase64} from './imageBase64';
+import Share from 'react-native-share';
 
 interface MainModalProps {
   intentData: ShareData;
@@ -59,7 +60,19 @@ const MainContent: React.FC<MainModalProps> = ({intentData}) => {
                 ClipboardModule.copyBase64(imageBase64);
               }}
             />
-            <Button style={styles.shareButton} icon="share" />
+            <Button
+              onPress={async () => {
+                try {
+                  await Share.open({
+                    url: `data:image/png;base64,${imageBase64}`,
+                  });
+                } catch (error) {
+                  NativeModules.ExitModule.exitApp();
+                }
+                NativeModules.ExitModule.exitApp();
+              }}
+              icon="share"
+            />
           </View>
         </View>
       ) : !error ? (
@@ -81,7 +94,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     flex: 1,
-    paddingLeft: 16,
+    paddingLeft: 60,
   },
   image: {
     width: '100%',
