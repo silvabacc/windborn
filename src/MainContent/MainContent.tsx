@@ -58,6 +58,7 @@ const MainContent: React.FC<MainModalProps> = ({intentData}) => {
                 ClipboardModule.copyBase64(imageBase64);
               }}
             />
+            <Button icon="share" />
           </View>
         </View>
       ) : !error ? (
@@ -71,12 +72,11 @@ const MainContent: React.FC<MainModalProps> = ({intentData}) => {
 
 const styles = StyleSheet.create({
   buttonContainer: {
+    marginTop: 16,
     flexDirection: 'row',
     width: '100%',
     justifyContent: 'space-evenly',
-  },
-  button: {
-    width: '50%',
+    alignItems: 'center',
   },
   image: {
     width: '100%',
