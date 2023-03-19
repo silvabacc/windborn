@@ -32,7 +32,7 @@ const Home: React.FC = () => {
           <video
             className="home-player"
             autoPlay
-            src="https://i.imgur.com/RdhpSAp.mp4"
+            src="https://i.imgur.com/bS7Iw3v.mp4"
             loop
             controls
           />

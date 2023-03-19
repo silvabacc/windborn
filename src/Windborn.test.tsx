@@ -2,7 +2,7 @@ import React from 'react';
 import {render, screen} from '@testing-library/react-native';
 import Windborn from './Windborn';
 
-jest.mock('./MainContent', () => () => (
+jest.mock('./MainContent/MainContent', () => () => (
   <div testID="main-content-modal">Main Content Modal</div>
 ));
 jest.mock('./HomeContent', () => () => (
