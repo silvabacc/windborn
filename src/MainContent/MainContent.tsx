@@ -50,6 +50,7 @@ const MainContent: React.FC<MainModalProps> = ({intentData}) => {
           <View style={styles.buttonContainer}>
             <Button
               title="Copy to Clipboard"
+              style={styles.copyButton}
               onPress={() => {
                 ToastAndroid.show(
                   'Copied to your clipboard!',
@@ -58,7 +59,7 @@ const MainContent: React.FC<MainModalProps> = ({intentData}) => {
                 ClipboardModule.copyBase64(imageBase64);
               }}
             />
-            <Button icon="share" />
+            <Button style={styles.shareButton} icon="share" />
           </View>
         </View>
       ) : !error ? (
@@ -74,9 +75,13 @@ const styles = StyleSheet.create({
   buttonContainer: {
     marginTop: 16,
     flexDirection: 'row',
-    width: '100%',
-    justifyContent: 'space-evenly',
+    justifyContent: 'space-between',
+  },
+  copyButton: {
+    justifyContent: 'center',
     alignItems: 'center',
+    flex: 1,
+    paddingLeft: 16,
   },
   image: {
     width: '100%',
