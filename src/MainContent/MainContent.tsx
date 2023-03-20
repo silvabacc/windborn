@@ -18,7 +18,7 @@ interface MainModalProps {
 }
 
 const MainContent: React.FC<MainModalProps> = ({intentData}) => {
-  const {ClipboardModule} = NativeModules;
+  const {ClipboardModule, ExitModule} = NativeModules;
   const {data} = intentData;
 
   const [imageBase64, setImageBase64] = useState<string>();
@@ -66,10 +66,10 @@ const MainContent: React.FC<MainModalProps> = ({intentData}) => {
                   await Share.open({
                     url: `data:image/png;base64,${imageBase64}`,
                   });
+                  ExitModule.exitApp();
                 } catch (error) {
-                  NativeModules.ExitModule.exitApp();
+                  ExitModule.exitApp();
                 }
-                NativeModules.ExitModule.exitApp();
               }}
               icon="share"
             />
