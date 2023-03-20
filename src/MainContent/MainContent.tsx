@@ -8,6 +8,7 @@ import {
   Image,
   ToastAndroid,
   AppState,
+  ActivityIndicator,
 } from 'react-native';
 import {useEffect, useState} from 'react';
 import Button from '../Common/Button';
@@ -24,6 +25,7 @@ const MainContent: React.FC<MainModalProps> = ({intentData}) => {
 
   const [imageBase64, setImageBase64] = useState<string>();
   const [error, setError] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const appState = useRef(AppState.currentState);
 
@@ -37,6 +39,7 @@ const MainContent: React.FC<MainModalProps> = ({intentData}) => {
         appState.current.match(/inactive|background/) &&
         nextAppState === 'active'
       ) {
+        setLoading(true);
         setImageBase64(undefined);
       }
 
@@ -63,6 +66,11 @@ const MainContent: React.FC<MainModalProps> = ({intentData}) => {
     getImageBase64();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data]);
+
+  //Indicate to the user's that they are fetching the new intent
+  if (loading && !imageBase64) {
+    return <ActivityIndicator />;
+  }
 
   return (
     <View testID="main-content-view">
