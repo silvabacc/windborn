@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useRef} from 'react';
 import {ShareData} from 'react-native-share-menu';
 import {
   View,
@@ -7,6 +7,7 @@ import {
   NativeModules,
   Image,
   ToastAndroid,
+  AppState,
 } from 'react-native';
 import {useEffect, useState} from 'react';
 import Button from '../Common/Button';
@@ -18,11 +19,34 @@ interface MainModalProps {
 }
 
 const MainContent: React.FC<MainModalProps> = ({intentData}) => {
-  const {ClipboardModule, ExitModule} = NativeModules;
+  const {ClipboardModule} = NativeModules;
   const {data} = intentData;
 
   const [imageBase64, setImageBase64] = useState<string>();
   const [error, setError] = useState<boolean>(false);
+
+  const appState = useRef(AppState.currentState);
+
+  //This is required so that if the user shares and comes back to the previous screen
+  //and they want to share once again, the imageBase64 should be reset so that we can
+  //show the new preview with the new intent data and this component should wait and
+  //listen for the changes for the intent data. Listener for intent data is declared in App.tsx
+  useEffect(() => {
+    const subscription = AppState.addEventListener('change', nextAppState => {
+      if (
+        appState.current.match(/inactive|background/) &&
+        nextAppState === 'active'
+      ) {
+        setImageBase64(undefined);
+      }
+
+      appState.current = nextAppState;
+    });
+
+    return () => {
+      subscription.remove();
+    };
+  }, []);
 
   useEffect(() => {
     const getImageBase64 = async () => {
@@ -62,14 +86,9 @@ const MainContent: React.FC<MainModalProps> = ({intentData}) => {
             />
             <Button
               onPress={async () => {
-                try {
-                  await Share.open({
-                    url: `data:image/png;base64,${imageBase64}`,
-                  });
-                  ExitModule.exitApp();
-                } catch (error) {
-                  ExitModule.exitApp();
-                }
+                Share.open({
+                  url: `data:image/png;base64,${imageBase64}`,
+                });
               }}
               icon="share"
             />
