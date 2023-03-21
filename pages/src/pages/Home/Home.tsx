@@ -29,10 +29,18 @@ const Home: React.FC = () => {
       <Modal show={show} onHide={() => setShow(false)}>
         <Modal.Header closeButton></Modal.Header>
         <Modal.Body>
+          <div className="modal-text">Sharing</div>
+          <video
+            className="home-player"
+            src="https://i.imgur.com/biXLEBs.mp4"
+            loop
+            controls
+          />
+          <div className="modal-text">Copying</div>
           <video
             className="home-player"
             autoPlay
-            src="https://i.imgur.com/bS7Iw3v.mp4"
+            src="https://i.imgur.com/MJqpE12.mp4"
             loop
             controls
           />
