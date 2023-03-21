@@ -1,26 +1,34 @@
 import React from 'react';
-import {Pressable, StyleSheet, Text} from 'react-native';
+import {Pressable, StyleSheet, Text, View} from 'react-native';
+import Icon from 'react-native-vector-icons/FontAwesome5';
 
 interface ButtonProps {
-  title: string;
+  title?: string;
+  icon?: string;
+  style?: any;
   onPress?: () => void;
 }
 
-const Button: React.FC<ButtonProps> = ({title, onPress}) => {
+const Button: React.FC<ButtonProps> = ({title, icon, style, onPress}) => {
   return (
-    <Pressable testID="copy-clipboard-button" onPress={onPress}>
-      <Text style={styles.text}>{title}</Text>
-    </Pressable>
+    <View style={style}>
+      <Pressable testID="copy-clipboard-button" onPress={onPress}>
+        {icon && <Icon style={styles.icon} size={20} name="share-alt" />}
+        {title && <Text style={styles.text}>{title}</Text>}
+      </Pressable>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   text: {
-    marginTop: 16,
     fontSize: 16,
     lineHeight: 21,
     letterSpacing: 0.25,
     color: 'black',
+  },
+  icon: {
+    padding: 16,
   },
 });
 

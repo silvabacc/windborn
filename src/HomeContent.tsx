@@ -1,5 +1,5 @@
 import React from 'react';
-import {Text, StyleSheet, NativeModules, View} from 'react-native';
+import {Text, StyleSheet, NativeModules, View, PixelRatio} from 'react-native';
 import Video from 'react-native-video';
 import Button from './Common/Button';
 
@@ -15,7 +15,7 @@ const HomeContent: React.FC = () => {
         source={{uri: 'https://i.imgur.com/bS7Iw3v.mp4'}}
         paused={false}
         repeat={true}
-        resizeMode={'stretch'}
+        resizeMode={'contain'}
         style={styles.video}
       />
       <Button
@@ -40,15 +40,9 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: 'black',
   },
-  image: {
-    width: '100%',
-    height: undefined,
-    aspectRatio: 1.12,
-    borderRadius: 10,
-  },
   video: {
     height: '70%',
-    aspectRatio: 0.6,
+    width: PixelRatio.getPixelSizeForLayoutSize(300),
   },
 });
 

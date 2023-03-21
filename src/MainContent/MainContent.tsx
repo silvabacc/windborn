@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useRef} from 'react';
 import {ShareData} from 'react-native-share-menu';
 import {
   View,
@@ -7,10 +7,13 @@ import {
   NativeModules,
   Image,
   ToastAndroid,
+  AppState,
+  ActivityIndicator,
 } from 'react-native';
 import {useEffect, useState} from 'react';
 import Button from '../Common/Button';
 import {convertImageToBase64, fetchImageBase64} from './imageBase64';
+import Share from 'react-native-share';
 
 interface MainModalProps {
   intentData: ShareData;
@@ -22,6 +25,31 @@ const MainContent: React.FC<MainModalProps> = ({intentData}) => {
 
   const [imageBase64, setImageBase64] = useState<string>();
   const [error, setError] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
+
+  const appState = useRef(AppState.currentState);
+
+  //This is required so that if the user shares and comes back to the previous screen
+  //and they want to share once again, the imageBase64 should be reset so that we can
+  //show the new preview with the new intent data and this component should wait and
+  //listen for the changes for the intent data. Listener for intent data is declared in App.tsx
+  useEffect(() => {
+    const subscription = AppState.addEventListener('change', nextAppState => {
+      if (
+        appState.current.match(/inactive|background/) &&
+        nextAppState === 'active'
+      ) {
+        setLoading(true);
+        setImageBase64(undefined);
+      }
+
+      appState.current = nextAppState;
+    });
+
+    return () => {
+      subscription.remove();
+    };
+  }, []);
 
   useEffect(() => {
     const getImageBase64 = async () => {
@@ -39,6 +67,11 @@ const MainContent: React.FC<MainModalProps> = ({intentData}) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data]);
 
+  //Indicate to the user's that they are fetching the new intent
+  if (loading && !imageBase64) {
+    return <ActivityIndicator />;
+  }
+
   return (
     <View testID="main-content-view">
       {imageBase64 ? (
@@ -50,6 +83,7 @@ const MainContent: React.FC<MainModalProps> = ({intentData}) => {
           <View style={styles.buttonContainer}>
             <Button
               title="Copy to Clipboard"
+              style={styles.copyButton}
               onPress={() => {
                 ToastAndroid.show(
                   'Copied to your clipboard!',
@@ -57,6 +91,14 @@ const MainContent: React.FC<MainModalProps> = ({intentData}) => {
                 );
                 ClipboardModule.copyBase64(imageBase64);
               }}
+            />
+            <Button
+              onPress={async () => {
+                Share.open({
+                  url: `data:image/png;base64,${imageBase64}`,
+                });
+              }}
+              icon="share"
             />
           </View>
         </View>
@@ -71,12 +113,15 @@ const MainContent: React.FC<MainModalProps> = ({intentData}) => {
 
 const styles = StyleSheet.create({
   buttonContainer: {
+    marginTop: 16,
     flexDirection: 'row',
-    width: '100%',
-    justifyContent: 'space-evenly',
+    justifyContent: 'space-between',
   },
-  button: {
-    width: '50%',
+  copyButton: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    flex: 1,
+    paddingLeft: 60,
   },
   image: {
     width: '100%',
