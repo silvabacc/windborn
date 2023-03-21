@@ -1,20 +1,21 @@
 .home-content {
   display: flex;
+  flex-direction: column;
 }
 
-.home-header {
-  font-size: 64px;
+.home-image {
+  margin-top: 16px;
+  border-radius: 16px;
+  width: 100%;
+}
+
+.home-slide-container {
+  width: 45vh;
 }
 
 .home-buttons {
   margin-top: 16px;
   margin-right: 16px;
-}
-
-.home-image {
-  margin-top: 100px;
-  height: 80vh;
-  width: 80vh;
 }
 
 .home-icon {
