@@ -6,7 +6,7 @@ import {
 } from '@testing-library/react-native';
 import React from 'react';
 import {NativeModules} from 'react-native';
-import {fetchImageBase64, convertImageToBase64} from './imageBase64';
+import {fetchImageBase64, convertImageToBase64} from './content';
 import MainContent from './MainContent';
 
 jest.mock('./imageBase64');

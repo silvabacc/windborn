@@ -4,6 +4,7 @@ import {PixelRatio, StyleSheet, View} from 'react-native';
 import HomeContent from './HomeContent';
 import MainContent from './MainContent/MainContent';
 import WindbornModal from './WindbornModal';
+import {GestureHandlerRootView} from 'react-native-gesture-handler';
 
 interface WindbornProps {
   intentData?: ShareData;

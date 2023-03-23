@@ -1,6 +1,6 @@
 import {mockReadFile} from '../../testHelpers/react-native-fs-mock';
 import {mockFetch} from '../../testHelpers/rn-fetch-blob-mock';
-import {convertImageToBase64, fetchImageBase64} from './imageBase64';
+import {convertImageToBase64, fetchImageBase64} from './content';
 
 jest.mock('node-fetch');
 

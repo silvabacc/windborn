@@ -7,6 +7,7 @@ import {
   NativeModules,
   View,
 } from 'react-native';
+import {GestureHandlerRootView} from 'react-native-gesture-handler';
 
 interface WindbornModalProps {
   content: React.ReactElement;
@@ -14,17 +15,15 @@ interface WindbornModalProps {
 
 const WindbornModal: React.FC<WindbornModalProps> = ({content}) => {
   return (
-    <Modal animationType="fade" transparent={true}>
-      <TouchableOpacity
-        activeOpacity={1}
-        style={styles.centeredView}
-        testID="modal-container"
-        onPress={() => NativeModules.ExitModule.exitApp()}>
-        <TouchableWithoutFeedback>
-          <View style={styles.modalView}>{content}</View>
-        </TouchableWithoutFeedback>
-      </TouchableOpacity>
-    </Modal>
+    <TouchableOpacity
+      activeOpacity={1}
+      style={styles.centeredView}
+      testID="modal-container"
+      onPress={() => NativeModules.ExitModule.exitApp()}>
+      <TouchableWithoutFeedback>
+        <View style={styles.modalView}>{content}</View>
+      </TouchableWithoutFeedback>
+    </TouchableOpacity>
   );
 };
 

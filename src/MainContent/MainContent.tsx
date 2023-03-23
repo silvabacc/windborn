@@ -2,18 +2,20 @@ import React, {useRef} from 'react';
 import {ShareData} from 'react-native-share-menu';
 import {
   View,
-  Text,
   StyleSheet,
   NativeModules,
-  Image,
-  ToastAndroid,
   AppState,
   ActivityIndicator,
+  Text,
+  Dimensions,
+  SafeAreaView,
+  Image,
 } from 'react-native';
 import {useEffect, useState} from 'react';
-import Button from '../Common/Button';
-import {convertImageToBase64, fetchImageBase64} from './imageBase64';
-import Share from 'react-native-share';
+import {Content, ContentURI, fetchContent} from './content';
+import Carousel from 'react-native-reanimated-carousel';
+import {GestureHandlerRootView} from 'react-native-gesture-handler';
+import Video from 'react-native-video';
 
 interface MainModalProps {
   intentData: ShareData;
@@ -21,9 +23,9 @@ interface MainModalProps {
 
 const MainContent: React.FC<MainModalProps> = ({intentData}) => {
   const {ClipboardModule} = NativeModules;
-  const {data} = intentData;
+  const {data, mimeType} = intentData;
 
-  const [imageBase64, setImageBase64] = useState<string>();
+  const [contentUri, setContentUri] = useState<ContentURI[]>();
   const [error, setError] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -40,7 +42,7 @@ const MainContent: React.FC<MainModalProps> = ({intentData}) => {
         nextAppState === 'active'
       ) {
         setLoading(true);
-        setImageBase64(undefined);
+        setContentUri(undefined);
       }
 
       appState.current = nextAppState;
@@ -52,83 +54,55 @@ const MainContent: React.FC<MainModalProps> = ({intentData}) => {
   }, []);
 
   useEffect(() => {
-    const getImageBase64 = async () => {
+    const getContentUri = async () => {
       try {
-        const image = intentData.mimeType.includes('image')
-          ? await convertImageToBase64(data as string)
-          : await fetchImageBase64(data as string);
-        setImageBase64(image);
+        let contentUri: ContentURI[] = [];
+        if (mimeType.includes('text')) {
+          contentUri = await fetchContent(data as string);
+        }
+        if (mimeType.includes('image')) {
+          contentUri = [{uri: data as string, type: Content.VIDEO}];
+        }
+        setContentUri(contentUri);
       } catch (error) {
         setError(true);
       }
     };
 
-    getImageBase64();
+    getContentUri();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data]);
 
   //Indicate to the user's that they are fetching the new intent
-  if (loading && !imageBase64) {
+  if (loading && !contentUri) {
     return <ActivityIndicator />;
   }
 
+  const width = Dimensions.get('window').width;
+  const height = Dimensions.get('window').height;
+
   return (
-    <View testID="main-content-view">
-      {imageBase64 ? (
-        <View testID="clipboard-menu">
-          <Image
-            source={{uri: `data:image/png;base64,${imageBase64}`}}
-            style={styles.image}
-          />
-          <View style={styles.buttonContainer}>
-            <Button
-              title="Copy to Clipboard"
-              style={styles.copyButton}
-              onPress={() => {
-                ToastAndroid.show(
-                  'Copied to your clipboard!',
-                  ToastAndroid.SHORT,
-                );
-                ClipboardModule.copyBase64(imageBase64);
-              }}
-            />
-            <Button
-              onPress={async () => {
-                Share.open({
-                  url: `data:image/png;base64,${imageBase64}`,
-                });
-              }}
-              icon="share"
-            />
-          </View>
-        </View>
-      ) : !error ? (
-        <Text>Preparing preview...</Text>
-      ) : (
-        <Text>Oops, this post doesn't seem to have any images</Text>
-      )}
+    <View style={styles.container}>
+      <Carousel
+        loop
+        width={width}
+        height={height * 0.7}
+        data={contentUri ?? []}
+        renderItem={({item}) => {
+          console.log(item.uri);
+          return item.type === Content.DEFAULT ? (
+            <Image style={{height, width}} source={{uri: item.uri}} />
+          ) : (
+            <Video repeat style={{height, width}} source={{uri: item.uri}} />
+          );
+        }}
+      />
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  buttonContainer: {
-    marginTop: 16,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  copyButton: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    flex: 1,
-    paddingLeft: 60,
-  },
-  image: {
-    width: '100%',
-    height: undefined,
-    aspectRatio: 1,
-    borderRadius: 10,
-  },
+  container: {},
 });
 
 export default MainContent;

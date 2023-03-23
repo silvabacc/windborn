@@ -3,6 +3,7 @@ import React, {useEffect, useState} from 'react';
 import ShareMenu, {ShareData} from 'react-native-share-menu';
 import {StatusBar} from 'react-native';
 import Windborn from './src/Windborn';
+import {GestureHandlerRootView} from 'react-native-gesture-handler';
 
 function App(): JSX.Element {
   const [intentData, setIntentData] = useState<ShareData>();
