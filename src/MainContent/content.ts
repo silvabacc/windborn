@@ -1,5 +1,4 @@
 import axios from 'axios';
-import RNFetchBlob from 'rn-fetch-blob';
 
 interface Children {
   data: {

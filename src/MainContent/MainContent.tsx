@@ -10,6 +10,7 @@ import {
   Dimensions,
   SafeAreaView,
   Image,
+  ImageBackground,
 } from 'react-native';
 import {useEffect, useState} from 'react';
 import {Content, ContentURI, fetchContent} from './content';
@@ -78,31 +79,38 @@ const MainContent: React.FC<MainModalProps> = ({intentData}) => {
     return <ActivityIndicator />;
   }
 
-  const width = Dimensions.get('window').width;
-  const height = Dimensions.get('window').height;
+  const width = Dimensions.get('window').width - 40;
+  const height = Dimensions.get('window').height * 0.5;
 
   return (
-    <View style={styles.container}>
+    <ImageBackground source={require('./loading.gif')} resizeMode={'center'}>
       <Carousel
         loop
         width={width}
-        height={height * 0.7}
+        height={height}
         data={contentUri ?? []}
         renderItem={({item}) => {
-          console.log(item.uri);
           return item.type === Content.DEFAULT ? (
-            <Image style={{height, width}} source={{uri: item.uri}} />
+            <Image style={styles.content} source={{uri: item.uri}} />
           ) : (
-            <Video repeat style={{height, width}} source={{uri: item.uri}} />
+            <Video
+              resizeMode="cover"
+              repeat
+              style={styles.content}
+              source={{uri: item.uri}}
+            />
           );
         }}
       />
-    </View>
+    </ImageBackground>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {},
+  content: {
+    height: Dimensions.get('window').height * 0.5,
+    widith: Dimensions.get('window').width * 0.5,
+  },
 });
 
 export default MainContent;
