@@ -1,6 +1,6 @@
 import React from 'react';
 import {ShareData} from 'react-native-share-menu';
-import {PixelRatio, StyleSheet, View} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import HomeContent from './HomeContent';
 import MainContent from './MainContent/MainContent';
 import WindbornModal from './WindbornModal';

@@ -1,7 +1,14 @@
 import React from 'react';
-import {Text, StyleSheet, NativeModules, View, PixelRatio} from 'react-native';
+import {
+  Text,
+  StyleSheet,
+  NativeModules,
+  View,
+  PixelRatio,
+  BackHandler,
+} from 'react-native';
+import {Button} from 'react-native-paper';
 import Video from 'react-native-video';
-import Button from './Common/Button';
 
 const HomeContent: React.FC = () => {
   return (
@@ -18,10 +25,7 @@ const HomeContent: React.FC = () => {
         resizeMode={'contain'}
         style={styles.video}
       />
-      <Button
-        title="Close"
-        onPress={() => NativeModules.ExitModule.exitApp()}
-      />
+      <Button onPress={() => NativeModules.ExitModule.exitApp()}>Close</Button>
     </View>
   );
 };

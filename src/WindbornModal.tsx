@@ -1,13 +1,12 @@
-/* eslint-disable react/react-in-jsx-scope */
+import React from 'react';
 import {
-  Modal,
   TouchableOpacity,
   TouchableWithoutFeedback,
   StyleSheet,
-  NativeModules,
   View,
+  BackHandler,
+  NativeModules,
 } from 'react-native';
-import {GestureHandlerRootView} from 'react-native-gesture-handler';
 
 interface WindbornModalProps {
   content: React.ReactElement;

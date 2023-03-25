@@ -1,4 +1,5 @@
 import axios from 'axios';
+import RNFetchBlob from 'rn-fetch-blob';
 
 interface Children {
   data: {
@@ -51,6 +52,18 @@ export const fetchContent = async (data: string): Promise<ContentURI[]> => {
   }
 
   return [];
+};
+
+/**
+ *
+ * @param url Image URL must be locating to a resource of an image
+ *            that can be converted into a blob
+ * @returns a base64 string representation of given URL
+ */
+export const convertToBase64 = async (url: string): Promise<string> => {
+  const imageResponse = await RNFetchBlob.fetch('GET', url);
+  const imageData = await imageResponse.base64();
+  return imageData;
 };
 
 /**
