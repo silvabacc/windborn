@@ -31,6 +31,8 @@ export interface ContentURI {
   type: Content;
 }
 
+const SESSION_NAME = 'videoconversion';
+
 /**
  *
  * @param data Intent data
@@ -52,6 +54,24 @@ export const fetchContent = async (data: string): Promise<ContentURI[]> => {
   }
 
   return [];
+};
+
+export const convertToURL = async (content: ContentURI) => {
+  RNFetchBlob.session(SESSION_NAME).dispose();
+
+  const dirs = RNFetchBlob.fs.dirs;
+
+  switch (content.type) {
+    case Content.DEFAULT:
+      return `data:image/png;base64,${await convertToBase64(content.uri)}`;
+    case Content.VIDEO:
+      const videoResponse = await RNFetchBlob.config({
+        session: SESSION_NAME,
+        path: `${dirs.DocumentDir}/${content.type}.mp4`,
+        fileCache: true,
+      }).fetch('GET', content.uri);
+      return `file://${videoResponse.path()}`;
+  }
 };
 
 /**

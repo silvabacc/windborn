@@ -11,11 +11,18 @@ import {
   ToastAndroid,
 } from 'react-native';
 import {useEffect, useState} from 'react';
-import {Content, ContentURI, convertToBase64, fetchContent} from './content';
+import {
+  Content,
+  ContentURI,
+  convertToBase64,
+  convertToURL,
+  fetchContent,
+} from './content';
 import Carousel from 'react-native-reanimated-carousel';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import Video from 'react-native-video';
 import {Button} from 'react-native-paper';
+import Share from 'react-native-share';
 
 interface MainModalProps {
   intentData: ShareData;
@@ -32,8 +39,6 @@ const MainContent: React.FC<MainModalProps> = ({intentData}) => {
   const index = useRef(0);
   const [error, setError] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
-
-  console.log(data, contentUri, index, error, loading);
 
   const appState = useRef(AppState.currentState);
 
@@ -77,11 +82,6 @@ const MainContent: React.FC<MainModalProps> = ({intentData}) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data]);
 
-  //Indicate to the user's that they are fetching the new intent
-  if (loading && !contentUri) {
-    return <ActivityIndicator />;
-  }
-
   return (
     <GestureHandlerRootView>
       {contentUri ? (
@@ -113,7 +113,7 @@ const MainContent: React.FC<MainModalProps> = ({intentData}) => {
                   'Copied to your clipboard!',
                   ToastAndroid.SHORT,
                 );
-                NativeModules.ClipboardModule.copyBase64(
+                ClipboardModule.copyBase64(
                   await convertToBase64(contentUri[index.current].uri),
                 );
               }}>
@@ -122,7 +122,13 @@ const MainContent: React.FC<MainModalProps> = ({intentData}) => {
             <Button
               mode="contained"
               icon="share"
-              onPress={() => console.log('Pressed')}>
+              onPress={async () => {
+                const url = await convertToURL(contentUri[index.current]);
+                Share.open({
+                  url,
+                  type: 'video/mp4',
+                });
+              }}>
               Share
             </Button>
           </View>
