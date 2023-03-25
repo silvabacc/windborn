@@ -1,5 +1,7 @@
 package com.windborn;
 
+import static android.content.Context.CLIPBOARD_SERVICE;
+
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
@@ -13,6 +15,10 @@ import android.net.Uri;
 import android.provider.MediaStore;
 import android.util.Base64;
 import android.app.Activity;
+
+import androidx.core.content.FileProvider;
+
+import java.io.File;
 
 public class ClipboardModule extends ReactContextBaseJavaModule {
   private ReactContext mReactContext;
@@ -34,9 +40,27 @@ public class ClipboardModule extends ReactContextBaseJavaModule {
     String bitmapPath = MediaStore.Images.Media.insertImage(mReactContext.getContentResolver(), bitmap, "Title", null);
     Uri bitmapUri = Uri.parse(bitmapPath);
     ClipData clipData = ClipData.newUri(mReactContext.getContentResolver(), "Image", bitmapUri);
-    ClipboardManager clipboardManager = (ClipboardManager) mReactContext.getSystemService(Context.CLIPBOARD_SERVICE);
+    ClipboardManager clipboardManager = (ClipboardManager) mReactContext.getSystemService(CLIPBOARD_SERVICE);
     clipboardManager.setPrimaryClip(clipData);
     Activity activity = mReactContext.getCurrentActivity();
     activity.finishAndRemoveTask();
   }
+
+
+  @ReactMethod
+  public void copyUri(String uriString) {
+    Uri uri = Uri.parse(uriString);
+    String filePath = uri.getPath();
+    File file = new File(filePath);
+
+    Uri imageUri = FileProvider.getUriForFile(
+            mReactContext,
+            "com.windborn.provider", //(use your app signature + ".provider" )
+            file);
+
+    ClipData clipData = ClipData.newUri(mReactContext.getContentResolver(), "File", imageUri);
+    ClipboardManager clipboardManager = (ClipboardManager) mReactContext.getSystemService(CLIPBOARD_SERVICE);
+    clipboardManager.setPrimaryClip(clipData);
+  }
+
 }

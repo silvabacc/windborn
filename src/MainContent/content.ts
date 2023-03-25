@@ -1,4 +1,6 @@
 import axios from 'axios';
+import 'react-native-get-random-values';
+import {v4 as uuidv4} from 'uuid';
 import RNFetchBlob from 'rn-fetch-blob';
 
 interface Children {
@@ -59,18 +61,26 @@ export const fetchContent = async (data: string): Promise<ContentURI[]> => {
 export const convertToURL = async (content: ContentURI) => {
   RNFetchBlob.session(SESSION_NAME).dispose();
 
+  const fileExtension = content.uri.split('.').pop();
+  const randomFileName = `${uuidv4()}`;
+
   const dirs = RNFetchBlob.fs.dirs;
 
   switch (content.type) {
     case Content.DEFAULT:
-      return `data:image/png;base64,${await convertToBase64(content.uri)}`;
+      const imageResponse = await RNFetchBlob.config({
+        session: SESSION_NAME,
+        fileCache: true,
+        path: `${dirs.DocumentDir}/${randomFileName}.${fileExtension}`,
+      }).fetch('GET', content.uri);
+      return `${imageResponse.path()}`;
     case Content.VIDEO:
       const videoResponse = await RNFetchBlob.config({
         session: SESSION_NAME,
-        path: `${dirs.DocumentDir}/${content.type}.mp4`,
+        path: `${dirs.DocumentDir}/${randomFileName}.${fileExtension}`,
         fileCache: true,
       }).fetch('GET', content.uri);
-      return `file://${videoResponse.path()}`;
+      return `${videoResponse.path()}`;
   }
 };
 
@@ -101,20 +111,32 @@ const redditCommentContent = async (id: string): Promise<ContentURI[]> => {
 
   if (is_video) {
     return [
-      {uri: contentData.media.reddit_video.fallback_url, type: Content.VIDEO},
+      {
+        uri: await convertToURL({
+          uri: contentData.media.reddit_video.fallback_url,
+          type: Content.VIDEO,
+        }),
+        type: Content.VIDEO,
+      },
     ];
   }
 
   if (is_gallery) {
-    const imagesUri = Object.keys(contentData.media_metadata).map(media => {
-      const format =
-        contentData.media_metadata[media].m.match(/^image\/(.+)$/)[1];
-      return {
-        uri: `https://i.redd.it/${media}.${format}`,
-        type: Content.DEFAULT,
-      };
-    });
-    return imagesUri;
+    const imagesUri = Object.keys(contentData.media_metadata).map(
+      async media => {
+        const format =
+          contentData.media_metadata[media].m.match(/^image\/(.+)$/)[1];
+        const url = `https://i.redd.it/${media}.${format}`;
+        return {
+          uri: await convertToURL({
+            uri: url,
+            type: Content.DEFAULT,
+          }),
+          type: Content.DEFAULT,
+        };
+      },
+    );
+    return Promise.all(imagesUri);
   }
 
   return [{uri: contentData.url, type: Content.DEFAULT}];

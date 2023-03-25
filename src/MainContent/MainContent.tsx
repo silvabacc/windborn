@@ -69,9 +69,10 @@ const MainContent: React.FC<MainModalProps> = ({intentData}) => {
       try {
         if (mimeType.includes('text')) {
           setContentUri(await fetchContent(data as string));
-        }
-        if (mimeType.includes('image')) {
-          setContentUri([{uri: data as string, type: Content.VIDEO}]);
+        } else if (mimeType.includes('image')) {
+          setContentUri(await fetchContent(data as string));
+        } else {
+          setError(true);
         }
       } catch (error) {
         setError(true);
@@ -94,13 +95,18 @@ const MainContent: React.FC<MainModalProps> = ({intentData}) => {
             onSnapToItem={prop => (index.current = prop)}
             renderItem={({item}) => {
               return item.type === Content.DEFAULT ? (
-                <Image style={styles.content} source={{uri: item.uri}} />
+                <Image
+                  style={styles.content}
+                  source={{
+                    uri: `file://${item.uri}`,
+                  }}
+                />
               ) : (
                 <Video
                   resizeMode="cover"
                   repeat
                   style={styles.content}
-                  source={{uri: item.uri}}
+                  source={{uri: `file://${item.uri}`}}
                 />
               );
             }}
@@ -113,9 +119,8 @@ const MainContent: React.FC<MainModalProps> = ({intentData}) => {
                   'Copied to your clipboard!',
                   ToastAndroid.SHORT,
                 );
-                ClipboardModule.copyBase64(
-                  await convertToBase64(contentUri[index.current].uri),
-                );
+                console.log(contentUri[index.current].uri);
+                ClipboardModule.copyUri(contentUri[index.current].uri);
               }}>
               Copy to Clipboard
             </Button>
