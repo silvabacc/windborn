@@ -2,37 +2,13 @@ import axios from 'axios';
 import 'react-native-get-random-values';
 import {v4 as uuidv4} from 'uuid';
 import RNFetchBlob from 'rn-fetch-blob';
+import {Content, ContentType, RedditResponse} from './types';
 
-interface Children {
-  data: {
-    url: string;
-    media_metadata?: any;
-    is_gallery?: boolean;
-    is_video: boolean;
-    media: {
-      reddit_video: {
-        fallback_url: string;
-      };
-    };
-  };
-}
-
-interface RedditResponse {
-  data: {
-    children: Children[];
-  };
-}
-
-export enum Content {
-  DEFAULT = 'default',
-  VIDEO = 'video',
-}
-
-export interface ContentURI {
-  uri: string;
-  type: Content;
-}
-
+/**
+ * This is the name given when using RNFetchBlob requests
+ * A session is a group of requests. We want session so that we can dispose
+ * of any temporary files when downloading content
+ */
 const SESSION_NAME = 'videoconversion';
 
 /**
@@ -40,7 +16,7 @@ const SESSION_NAME = 'videoconversion';
  * @param data Intent data
  * @returns string of URIs of the content
  */
-export const fetchContent = async (data: string): Promise<ContentURI[]> => {
+export const fetchContent = async (data: string): Promise<Content[]> => {
   const redditIdRegex = /\/comments\/(\w+)\//;
   const twitterIdRegex = /\/status\/(\d+)/;
 
@@ -58,30 +34,31 @@ export const fetchContent = async (data: string): Promise<ContentURI[]> => {
   return [];
 };
 
-export const convertToURL = async (content: ContentURI) => {
+/**
+ * This function downloads and saves the resource found in the URL to a temporary file
+ * Everytme we make a new request to a url, the previous files will be disposed
+ *
+ * @param url A URL to a resource like an image/mp4
+ * @param contentType The type of content this is e.g. if resource is jpeg,
+ *                    then the content should be Content.Image
+ * @returns A URI location to the file
+ */
+
+export const convertToUri = async (url: string, contentType: ContentType) => {
   RNFetchBlob.session(SESSION_NAME).dispose();
 
-  const fileExtension = content.uri.split('.').pop();
+  const fileExtension =
+    contentType === ContentType.VIDEO ? 'mp4' : url.split('.').pop();
   const randomFileName = `${uuidv4()}`;
-
   const dirs = RNFetchBlob.fs.dirs;
 
-  switch (content.type) {
-    case Content.DEFAULT:
-      const imageResponse = await RNFetchBlob.config({
-        session: SESSION_NAME,
-        fileCache: true,
-        path: `${dirs.DocumentDir}/${randomFileName}.${fileExtension}`,
-      }).fetch('GET', content.uri);
-      return `${imageResponse.path()}`;
-    case Content.VIDEO:
-      const videoResponse = await RNFetchBlob.config({
-        session: SESSION_NAME,
-        path: `${dirs.DocumentDir}/${randomFileName}.mp4`,
-        fileCache: true,
-      }).fetch('GET', content.uri);
-      return `${videoResponse.path()}`;
-  }
+  const response = await RNFetchBlob.config({
+    session: SESSION_NAME,
+    path: `${dirs.DocumentDir}/${randomFileName}.${fileExtension}`,
+    fileCache: true,
+  }).fetch('GET', url);
+
+  return response.path();
 };
 
 /**
@@ -99,10 +76,10 @@ export const convertToBase64 = async (url: string): Promise<string> => {
 /**
  *
  * @param id Reddit ID post
- * @returns a string of the URIs of the content that is assicoated with ID
- *          this involves both images/videos and can include text posts as we;;
+ * @returns an array of Content that is assicoated with ID
+ *          this involves both images/videos and can include text posts as well
  */
-const redditCommentContent = async (id: string): Promise<ContentURI[]> => {
+const redditCommentContent = async (id: string): Promise<Content[]> => {
   const redditCommentJson = `https://www.reddit.com/${id}.json`;
   const response = await axios.get<RedditResponse[]>(redditCommentJson);
 
@@ -112,11 +89,11 @@ const redditCommentContent = async (id: string): Promise<ContentURI[]> => {
   if (is_video) {
     return [
       {
-        uri: await convertToURL({
-          uri: contentData.media.reddit_video.fallback_url,
-          type: Content.VIDEO,
-        }),
-        type: Content.VIDEO,
+        uri: await convertToUri(
+          contentData.media.reddit_video.fallback_url,
+          ContentType.VIDEO,
+        ),
+        type: ContentType.VIDEO,
       },
     ];
   }
@@ -128,16 +105,18 @@ const redditCommentContent = async (id: string): Promise<ContentURI[]> => {
           contentData.media_metadata[media].m.match(/^image\/(.+)$/)[1];
         const url = `https://i.redd.it/${media}.${format}`;
         return {
-          uri: await convertToURL({
-            uri: url,
-            type: Content.DEFAULT,
-          }),
-          type: Content.DEFAULT,
+          uri: await convertToUri(url, ContentType.IMAGE),
+          type: ContentType.IMAGE,
         };
       },
     );
     return Promise.all(imagesUri);
   }
 
-  return [{uri: contentData.url, type: Content.DEFAULT}];
+  return [
+    {
+      uri: await convertToUri(contentData.url, ContentType.IMAGE),
+      type: ContentType.IMAGE,
+    },
+  ];
 };

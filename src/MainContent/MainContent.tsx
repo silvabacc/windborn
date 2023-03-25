@@ -11,7 +11,12 @@ import {
   ToastAndroid,
 } from 'react-native';
 import {useEffect, useState} from 'react';
-import {Content, ContentURI, convertToURL, fetchContent} from './content';
+import {
+  ContentType,
+  Content,
+  convertToUri,
+  fetchContent,
+} from './content/content';
 import Carousel from 'react-native-reanimated-carousel';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import Video from 'react-native-video';
@@ -29,7 +34,7 @@ const MainContent: React.FC<MainModalProps> = ({intentData}) => {
   const {ClipboardModule} = NativeModules;
   const {data, mimeType} = intentData;
 
-  const [contentUri, setContentUri] = useState<ContentURI[]>();
+  const [contentUri, setContentUri] = useState<Content[]>();
   const index = useRef(0);
   const [error, setError] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
@@ -89,7 +94,7 @@ const MainContent: React.FC<MainModalProps> = ({intentData}) => {
             onSnapToItem={prop => (index.current = prop)}
             renderItem={({item}) => {
               console.log(item.uri);
-              return item.type === Content.DEFAULT ? (
+              return item.type === ContentType.IMAGE ? (
                 <Image
                   style={styles.content}
                   source={{
@@ -123,7 +128,7 @@ const MainContent: React.FC<MainModalProps> = ({intentData}) => {
               mode="contained"
               icon="share"
               onPress={async () => {
-                const url = await convertToURL(contentUri[index.current]);
+                const url = await convertToUri(contentUri[index.current]);
                 Share.open({
                   url,
                   type: 'video/mp4',
