@@ -77,7 +77,7 @@ export const convertToURL = async (content: ContentURI) => {
     case Content.VIDEO:
       const videoResponse = await RNFetchBlob.config({
         session: SESSION_NAME,
-        path: `${dirs.DocumentDir}/${randomFileName}.${fileExtension}`,
+        path: `${dirs.DocumentDir}/${randomFileName}.mp4`,
         fileCache: true,
       }).fetch('GET', content.uri);
       return `${videoResponse.path()}`;

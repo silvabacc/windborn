@@ -11,13 +11,7 @@ import {
   ToastAndroid,
 } from 'react-native';
 import {useEffect, useState} from 'react';
-import {
-  Content,
-  ContentURI,
-  convertToBase64,
-  convertToURL,
-  fetchContent,
-} from './content';
+import {Content, ContentURI, convertToURL, fetchContent} from './content';
 import Carousel from 'react-native-reanimated-carousel';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import Video from 'react-native-video';
@@ -94,6 +88,7 @@ const MainContent: React.FC<MainModalProps> = ({intentData}) => {
             data={contentUri}
             onSnapToItem={prop => (index.current = prop)}
             renderItem={({item}) => {
+              console.log(item.uri);
               return item.type === Content.DEFAULT ? (
                 <Image
                   style={styles.content}
