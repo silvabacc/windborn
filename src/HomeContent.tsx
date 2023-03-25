@@ -5,7 +5,7 @@ import Video from 'react-native-video';
 
 const HomeContent: React.FC = () => {
   return (
-    <View style={styles.modalContainer}>
+    <View testID="home-screen" style={styles.modalContainer}>
       <Text style={[styles.modalText, styles.modalHeader]}>Windborn</Text>
       <Text style={styles.modalText}>
         You can copy images/videos to your clipboard via the share button on
