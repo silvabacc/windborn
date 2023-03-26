@@ -11,17 +11,13 @@ import {
   ToastAndroid,
 } from 'react-native';
 import {useEffect, useState} from 'react';
-import {
-  ContentType,
-  Content,
-  convertToUri,
-  fetchContent,
-} from './content/content';
+import {convertToUri, fetchContent} from './content/content';
 import Carousel from 'react-native-reanimated-carousel';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import Video from 'react-native-video';
 import {Button} from 'react-native-paper';
 import Share from 'react-native-share';
+import {ContentType} from './content/types';
 
 interface MainModalProps {
   intentData: ShareData;
@@ -119,7 +115,6 @@ const MainContent: React.FC<MainModalProps> = ({intentData}) => {
                   'Copied to your clipboard!',
                   ToastAndroid.SHORT,
                 );
-                console.log(contentUri[index.current].uri);
                 ClipboardModule.copyUri(contentUri[index.current].uri);
               }}>
               Copy to Clipboard
@@ -128,10 +123,10 @@ const MainContent: React.FC<MainModalProps> = ({intentData}) => {
               mode="contained"
               icon="share"
               onPress={async () => {
-                const url = await convertToUri(contentUri[index.current]);
+                const {uri} = contentUri[index.current];
+
                 Share.open({
-                  url,
-                  type: 'video/mp4',
+                  url: `file://${uri}`,
                 });
               }}>
               Share
