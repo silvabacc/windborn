@@ -97,6 +97,7 @@ const MainContent: React.FC<MainModalProps> = ({intentData}) => {
             renderItem={({item}) => {
               return item.type === ContentType.IMAGE ? (
                 <Image
+                  testID="carousel-image"
                   style={styles.content}
                   source={{
                     uri: `file://${item.uri}`,
@@ -104,6 +105,7 @@ const MainContent: React.FC<MainModalProps> = ({intentData}) => {
                 />
               ) : (
                 <Video
+                  testID="carousel-video"
                   resizeMode="cover"
                   repeat
                   style={styles.content}
@@ -115,6 +117,7 @@ const MainContent: React.FC<MainModalProps> = ({intentData}) => {
           <View style={styles.buttonsContainer}>
             <Button
               mode="contained"
+              testID="copy-button"
               onPress={async () => {
                 ToastAndroid.show(
                   'Copied to your clipboard!',
@@ -125,6 +128,7 @@ const MainContent: React.FC<MainModalProps> = ({intentData}) => {
               Copy to Clipboard
             </Button>
             <Button
+              testID="share-button"
               mode="contained"
               icon="share"
               onPress={async () => {
