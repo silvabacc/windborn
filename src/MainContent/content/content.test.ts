@@ -15,6 +15,7 @@ const singleImageResponse = {
         children: [
           {
             data: {
+              post_hint: 'image',
               url: 'www.dummmy.com/image.png',
             },
           },
@@ -32,6 +33,7 @@ const videoResponse = {
           {
             data: {
               is_video: true,
+              post_hint: 'hosted:video',
               media: {
                 reddit_video: {
                   fallback_url: 'www.fallbackurl.com/video.mp4?source=fallback',
@@ -58,6 +60,20 @@ const galleryResponse = {
                 y1o4u5az7ipa1: {m: 'image/jpg'},
               },
             },
+          },
+        ],
+      },
+    },
+  ],
+};
+
+const errorResponse = {
+  data: [
+    {
+      data: {
+        children: [
+          {
+            data: {},
           },
         ],
       },
@@ -140,6 +156,14 @@ describe('Content', () => {
         6,
         'GET',
         'https://i.redd.it/y1o4u5az7ipa1.jpg',
+      );
+    });
+
+    it('should throw an error', async () => {
+      mockAxiosGet.mockReturnValue(errorResponse);
+
+      await expect(redditCommentContent('dummyId')).rejects.toThrow(
+        'Content not found',
       );
     });
   });

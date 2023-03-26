@@ -4,6 +4,7 @@ interface Children {
     media_metadata?: any;
     is_gallery?: boolean;
     is_video: boolean;
+    post_hint: string;
     media: {
       reddit_video: {
         fallback_url: string;

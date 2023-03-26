@@ -30,8 +30,6 @@ export const fetchContent = async (data: string): Promise<Content[]> => {
   if (twitterId) {
     //Handle Twitter
   }
-
-  return [];
 };
 
 /**
@@ -82,7 +80,11 @@ export const redditCommentContent = async (id: string): Promise<Content[]> => {
   const response = await axios.get<RedditResponse[]>(redditCommentJson);
 
   const contentData = response.data[0].data.children[0].data;
-  const {is_video, is_gallery} = contentData;
+  const {is_video, is_gallery, post_hint} = contentData;
+
+  if (!post_hint && !is_gallery) {
+    throw new Error('Content not found');
+  }
 
   if (is_video) {
     return [
