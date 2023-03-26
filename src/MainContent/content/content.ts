@@ -44,11 +44,10 @@ export const fetchContent = async (data: string): Promise<Content[]> => {
  * @returns A URI location to the file
  */
 
-export const convertToUri = async (url: string, contentType: ContentType) => {
+export const convertToUri = async (url: string) => {
   RNFetchBlob.session(SESSION_NAME).dispose();
 
-  const fileExtension =
-    contentType === ContentType.VIDEO ? 'mp4' : url.split('.').pop();
+  const fileExtension = url.split('.').pop();
   const dirs = RNFetchBlob.fs.dirs;
 
   const response = await RNFetchBlob.config({
@@ -89,8 +88,10 @@ const redditCommentContent = async (id: string): Promise<Content[]> => {
     return [
       {
         uri: await convertToUri(
-          contentData.media.reddit_video.fallback_url,
-          ContentType.VIDEO,
+          contentData.media.reddit_video.fallback_url.replace(
+            '?source=fallback',
+            '',
+          ),
         ),
         type: ContentType.VIDEO,
       },
@@ -104,7 +105,7 @@ const redditCommentContent = async (id: string): Promise<Content[]> => {
           contentData.media_metadata[media].m.match(/^image\/(.+)$/)[1];
         const url = `https://i.redd.it/${media}.${format}`;
         return {
-          uri: await convertToUri(url, ContentType.IMAGE),
+          uri: await convertToUri(url),
           type: ContentType.IMAGE,
         };
       },
@@ -114,7 +115,7 @@ const redditCommentContent = async (id: string): Promise<Content[]> => {
 
   return [
     {
-      uri: await convertToUri(contentData.url, ContentType.IMAGE),
+      uri: await convertToUri(contentData.url),
       type: ContentType.IMAGE,
     },
   ];
