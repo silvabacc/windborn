@@ -85,7 +85,7 @@ const MainContent: React.FC<MainModalProps> = ({intentData}) => {
 
   return (
     <GestureHandlerRootView>
-      {contentUri ? (
+      {contentUri?.length ? (
         <View style={styles.container}>
           <Carousel
             testID="carousel"
@@ -95,7 +95,6 @@ const MainContent: React.FC<MainModalProps> = ({intentData}) => {
             data={contentUri}
             onSnapToItem={prop => (index.current = prop)}
             renderItem={({item}) => {
-              console.log(item.uri);
               return item.type === ContentType.IMAGE ? (
                 <Image
                   style={styles.content}
@@ -140,7 +139,7 @@ const MainContent: React.FC<MainModalProps> = ({intentData}) => {
           </View>
         </View>
       ) : (
-        <ActivityIndicator />
+        <ActivityIndicator testID="loading-indicator" />
       )}
     </GestureHandlerRootView>
   );
