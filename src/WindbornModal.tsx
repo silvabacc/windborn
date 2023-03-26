@@ -4,7 +4,6 @@ import {
   TouchableWithoutFeedback,
   StyleSheet,
   View,
-  BackHandler,
   NativeModules,
 } from 'react-native';
 

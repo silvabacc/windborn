@@ -18,7 +18,6 @@ const SESSION_NAME = 'videoconversion';
  */
 export const fetchContent = async (data: string): Promise<Content[]> => {
   const redditIdRegex = /\/comments\/(\w+)\//;
-  const twitterIdRegex = /\/status\/(\d+)/;
 
   const redditId = data.match(redditIdRegex);
   if (redditId) {
@@ -26,10 +25,7 @@ export const fetchContent = async (data: string): Promise<Content[]> => {
     return await redditCommentContent(redditId[0]);
   }
 
-  const twitterId = data.match(twitterIdRegex);
-  if (twitterId) {
-    //Handle Twitter
-  }
+  throw new Error('Content not found');
 };
 
 /**
