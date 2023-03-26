@@ -11,13 +11,13 @@ import {
   ToastAndroid,
 } from 'react-native';
 import {useEffect, useState} from 'react';
-import {convertToUri, fetchContent} from './content/content';
+import {fetchContent} from './content/content';
 import Carousel from 'react-native-reanimated-carousel';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import Video from 'react-native-video';
 import {Button} from 'react-native-paper';
 import Share from 'react-native-share';
-import {ContentType} from './content/types';
+import {Content, ContentType} from './content/types';
 
 interface MainModalProps {
   intentData: ShareData;
