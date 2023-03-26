@@ -77,7 +77,7 @@ export const convertToBase64 = async (url: string): Promise<string> => {
  * @returns an array of Content that is assicoated with ID
  *          this involves both images/videos and can include text posts as well
  */
-const redditCommentContent = async (id: string): Promise<Content[]> => {
+export const redditCommentContent = async (id: string): Promise<Content[]> => {
   const redditCommentJson = `https://www.reddit.com/${id}.json`;
   const response = await axios.get<RedditResponse[]>(redditCommentJson);
 
