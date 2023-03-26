@@ -1,7 +1,7 @@
 import axios from 'axios';
 import 'react-native-get-random-values';
-import {v4 as uuidv4} from 'uuid';
 import RNFetchBlob from 'rn-fetch-blob';
+import {nanoid} from 'nanoid';
 import {Content, ContentType, RedditResponse} from './types';
 
 /**
@@ -49,12 +49,11 @@ export const convertToUri = async (url: string, contentType: ContentType) => {
 
   const fileExtension =
     contentType === ContentType.VIDEO ? 'mp4' : url.split('.').pop();
-  const randomFileName = `${uuidv4()}`;
   const dirs = RNFetchBlob.fs.dirs;
 
   const response = await RNFetchBlob.config({
     session: SESSION_NAME,
-    path: `${dirs.DocumentDir}/${randomFileName}.${fileExtension}`,
+    path: `${dirs.DocumentDir}/${nanoid()}.${fileExtension}`,
     fileCache: true,
   }).fetch('GET', url);
 
