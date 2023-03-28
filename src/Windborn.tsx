@@ -27,6 +27,7 @@ const styles = StyleSheet.create({
   appContainer: {
     backgroundColor: 'rgba(0, 0, 0, 0)',
     flex: 1,
+    padding: 16,
   },
 });
 

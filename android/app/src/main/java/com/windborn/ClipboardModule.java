@@ -46,7 +46,6 @@ public class ClipboardModule extends ReactContextBaseJavaModule {
     activity.finishAndRemoveTask();
   }
 
-
   @ReactMethod
   public void copyUri(String uriString) {
     Uri uri = Uri.parse(uriString);
@@ -55,7 +54,7 @@ public class ClipboardModule extends ReactContextBaseJavaModule {
 
     Uri imageUri = FileProvider.getUriForFile(
             mReactContext,
-            "com.windborn.provider", //(use your app signature + ".provider" )
+            "com.windborn.provider", 
             file);
 
     ClipData clipData = ClipData.newUri(mReactContext.getContentResolver(), "File", imageUri);

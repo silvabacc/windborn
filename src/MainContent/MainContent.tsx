@@ -79,6 +79,10 @@ const MainContent: React.FC<MainModalProps> = ({intentData}) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data]);
 
+  if (loading && !contentUri) {
+    <ActivityIndicator />;
+  }
+
   if (error) {
     return <Text>Unsupported File Type</Text>;
   }
