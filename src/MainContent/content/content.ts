@@ -22,10 +22,43 @@ export const fetchContent = async (data: string): Promise<Content[]> => {
   const redditId = data.match(redditIdRegex);
   if (redditId) {
     //Handle Reddit
-    return await redditCommentContent(redditId[0]);
+    return await redditCommentContent(redditId[1], data);
   }
 
   throw new Error('Content not found');
+};
+
+/**
+ * This function downloads and saves the Reddit videos to a temporary file
+ * Everytme we make a new request to a url, the previous files will be disposed
+ * This uses an external API to fetch reddit videos specifically as Reddit hosted videos
+ * have no audio and also causes difficulties when sharing to other applications
+ *
+ * @param videoUrl URL to a reddit video
+ * @param audioUrl URL to the reddit audio counterpart of video
+ * @param permalink URL to the reddit post. Prefably has to be a comments link
+ * @returns A URI location to the file
+ */
+const fetchRedditVideoURL = async (
+  videoUrl: string,
+  audioUrl: string,
+  permalink: string,
+) => {
+  RNFetchBlob.session(SESSION_NAME).dispose();
+
+  const fileExtension = 'mp4';
+  const dirs = RNFetchBlob.fs.dirs;
+
+  const redditVideoResponse = await RNFetchBlob.config({
+    session: SESSION_NAME,
+    path: `${dirs.DocumentDir}/${nanoid()}.${fileExtension}`,
+    fileCache: true,
+  }).fetch(
+    'GET',
+    `https://sd.rapidsave.com/download.php?permalink=${permalink}&video_url=${videoUrl}&audio_url=${audioUrl}`,
+  );
+
+  return redditVideoResponse.path();
 };
 
 /**
@@ -71,7 +104,10 @@ export const convertToBase64 = async (url: string): Promise<string> => {
  * @returns an array of Content that is assicoated with ID
  *          this involves both images/videos and can include text posts as well
  */
-export const redditCommentContent = async (id: string): Promise<Content[]> => {
+export const redditCommentContent = async (
+  id: string,
+  permalink: string,
+): Promise<Content[]> => {
   const redditCommentJson = `https://www.reddit.com/${id}.json`;
   const response = await axios.get<RedditResponse[]>(redditCommentJson);
 
@@ -85,11 +121,10 @@ export const redditCommentContent = async (id: string): Promise<Content[]> => {
   if (is_video) {
     return [
       {
-        uri: await convertToUri(
-          contentData.media.reddit_video.fallback_url.replace(
-            '?source=fallback',
-            '',
-          ),
+        uri: await fetchRedditVideoURL(
+          contentData.media.reddit_video.fallback_url,
+          `${contentData.url}/DASH_audio.mp4`,
+          permalink,
         ),
         type: ContentType.VIDEO,
       },
