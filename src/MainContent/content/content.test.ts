@@ -1,5 +1,6 @@
 import axios from 'axios';
 import {mockConfig, mockFetch} from '../../../testHelpers/rn-fetch-blob-mock';
+import getConfig from '../../config';
 import {convertToBase64, convertToUri, redditCommentContent} from './content';
 
 jest.mock('rn-fetch-blob');
@@ -7,6 +8,8 @@ jest.mock('axios');
 jest.mock('nanoid', () => ({
   nanoid: () => 'randomnanoid',
 }));
+
+const {RAPID_SAVE_URL} = getConfig();
 
 const singleImageResponse = {
   data: [
@@ -34,6 +37,7 @@ const videoResponse = {
             data: {
               is_video: true,
               post_hint: 'hosted:video',
+              url: 'www.reddit.com/123456',
               media: {
                 reddit_video: {
                   fallback_url: 'www.fallbackurl.com/video.mp4?source=fallback',
@@ -119,7 +123,7 @@ describe('Content', () => {
     it('should make the correct call for single images', async () => {
       mockAxiosGet.mockResolvedValue(singleImageResponse);
 
-      await redditCommentContent('dummyId');
+      await redditCommentContent('dummyId', 'redditUrl');
 
       expect(mockAxiosGet).toHaveBeenCalledWith(
         'https://www.reddit.com/dummyId.json',
@@ -129,20 +133,20 @@ describe('Content', () => {
 
     it('should make the correct call for videos', async () => {
       mockAxiosGet.mockResolvedValue(videoResponse);
-      await redditCommentContent('dummyId');
+      await redditCommentContent('dummyId', 'redditUrl');
 
       expect(mockAxiosGet).toHaveBeenCalledWith(
         'https://www.reddit.com/dummyId.json',
       );
       expect(mockFetch).toHaveBeenCalledWith(
         'GET',
-        'www.fallbackurl.com/video.mp4',
+        `${RAPID_SAVE_URL}?permalink=redditUrl&video_url=www.fallbackurl.com/video.mp4?source=fallback&audio_url=www.reddit.com/123456/DASH_audio.mp4`,
       );
     });
 
     it('should make the correct call for galleries', async () => {
       mockAxiosGet.mockResolvedValue(galleryResponse);
-      await redditCommentContent('dummyId');
+      await redditCommentContent('dummyId', 'redditUrl');
 
       expect(mockAxiosGet).toHaveBeenCalledWith(
         'https://www.reddit.com/dummyId.json',
@@ -162,9 +166,9 @@ describe('Content', () => {
     it('should throw an error', async () => {
       mockAxiosGet.mockReturnValue(errorResponse);
 
-      await expect(redditCommentContent('dummyId')).rejects.toThrow(
-        'Content not found',
-      );
+      await expect(
+        redditCommentContent('dummyId', 'redditUrl'),
+      ).rejects.toThrow('Content not found');
     });
   });
 });

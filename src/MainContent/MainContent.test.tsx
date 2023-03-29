@@ -9,7 +9,6 @@ import {fetchContent} from './content/content';
 import {Content, ContentType} from './content/types';
 import MainContent from './MainContent';
 import {NativeModules, ToastAndroid} from 'react-native';
-import Share from 'react-native-share';
 
 const mockOpen = jest.fn();
 
@@ -29,7 +28,7 @@ mockFetchContent.mockReturnValue([
 
 describe('<MainContent />', () => {
   it('should render the carouel', async () => {
-    const intentData = {url: 'dummy', mimeType: 'text/plain'};
+    const intentData = {data: 'dummy', mimeType: 'text/plain'};
 
     render(<MainContent intentData={intentData} />);
 
@@ -41,7 +40,7 @@ describe('<MainContent />', () => {
     async type => {
       mockFetchContent.mockReturnValueOnce([{uri: 'dummy', type} as Content]);
 
-      const intentData = {url: '', mimeType: 'text/plain'};
+      const intentData = {data: '', mimeType: 'text/plain'};
 
       render(<MainContent intentData={intentData} />);
 
@@ -54,7 +53,7 @@ describe('<MainContent />', () => {
   );
 
   it('should render %s type with the correct component', async () => {
-    const intentData = {url: '', mimeType: 'text/plain'};
+    const intentData = {data: '', mimeType: 'text/plain'};
 
     render(<MainContent intentData={intentData} />);
 
@@ -77,7 +76,7 @@ describe('<MainContent />', () => {
   });
 
   it('should copy content to clipboard', async () => {
-    const intentData = {url: 'dummy', mimeType: 'text/plain'};
+    const intentData = {data: 'dummy', mimeType: 'text/plain'};
     NativeModules.ClipboardModule = {copyUri: mockCopyUri};
     ToastAndroid.show = mockToast;
 
@@ -98,7 +97,7 @@ describe('<MainContent />', () => {
   });
 
   it('should share the content', async () => {
-    const intentData = {url: 'dummy', mimeType: 'text/plain'};
+    const intentData = {data: 'dummy', mimeType: 'text/plain'};
     render(<MainContent intentData={intentData} />);
 
     const shareButton = await screen.findByTestId('share-button');
@@ -108,7 +107,7 @@ describe('<MainContent />', () => {
   });
 
   it('should render the error message if mimetype is not supproted', () => {
-    const intentData = {url: 'dummy', mimeType: 'unknown'};
+    const intentData = {data: 'dummy', mimeType: 'unknown'};
 
     render(<MainContent intentData={intentData} />);
 
@@ -116,7 +115,7 @@ describe('<MainContent />', () => {
   });
 
   it('should render the error message if something went wrong', () => {
-    const intentData = {url: 'dummy', mimeType: 'unknown'};
+    const intentData = {data: 'dummy', mimeType: 'unknown'};
     mockFetchContent.mockImplementation(() => {
       throw new Error('Something went wrong');
     });
@@ -124,5 +123,17 @@ describe('<MainContent />', () => {
     render(<MainContent intentData={intentData} />);
 
     expect(screen.getByText('Unsupported File Type')).toBeTruthy();
+  });
+
+  it('should render message for unsupported multiple files', () => {
+    const intentData = {data: ['dummy', 'dummy2'], mimeType: 'image/jpeg'};
+
+    render(<MainContent intentData={intentData} />);
+
+    expect(
+      screen.getByText(
+        "Can't send multiple files. Only one file sharing is supported",
+      ),
+    ).toBeTruthy();
   });
 });

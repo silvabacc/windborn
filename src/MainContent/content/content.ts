@@ -3,6 +3,9 @@ import 'react-native-get-random-values';
 import RNFetchBlob from 'rn-fetch-blob';
 import {nanoid} from 'nanoid';
 import {Content, ContentType, RedditResponse} from './types';
+import getConfig from '../../config';
+
+const {RAPID_SAVE_URL} = getConfig();
 
 /**
  * This is the name given when using RNFetchBlob requests
@@ -55,7 +58,7 @@ const fetchRedditVideoURL = async (
     fileCache: true,
   }).fetch(
     'GET',
-    `https://sd.rapidsave.com/download.php?permalink=${permalink}&video_url=${videoUrl}&audio_url=${audioUrl}`,
+    `${RAPID_SAVE_URL}?permalink=${permalink}&video_url=${videoUrl}&audio_url=${audioUrl}`,
   );
 
   return redditVideoResponse.path();
