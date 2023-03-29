@@ -20,6 +20,7 @@ jest.mock('react-native-reanimated');
 
 const mockFetchContent = fetchContent as jest.Mocked<any>;
 const mockCopyUri = jest.fn();
+const mockCopyText = jest.fn();
 const mockToast = jest.fn();
 
 mockFetchContent.mockReturnValue([
@@ -75,7 +76,11 @@ describe('<MainContent />', () => {
     expect(await screen.findByTestId('loading-indicator')).toBeTruthy();
   });
 
-  it('should copy content to clipboard', async () => {
+  it('should copy content to clipboard for images', async () => {
+    mockFetchContent.mockReturnValueOnce([
+      {uri: 'dummy', type: ContentType.IMAGE} as Content,
+    ]);
+
     const intentData = {data: 'dummy', mimeType: 'text/plain'};
     NativeModules.ClipboardModule = {copyUri: mockCopyUri};
     ToastAndroid.show = mockToast;
@@ -90,6 +95,31 @@ describe('<MainContent />', () => {
 
     expect(mockCopyUri).toHaveBeenCalled();
     expect(mockCopyUri).toHaveBeenCalledWith('dummy');
+    expect(mockToast).toHaveBeenCalledWith(
+      'Copied to your clipboard!',
+      undefined,
+    );
+  });
+
+  it('should copy url to clipboard for videos', async () => {
+    mockFetchContent.mockReturnValueOnce([
+      {uri: 'dummy', type: ContentType.VIDEO} as Content,
+    ]);
+
+    const intentData = {data: 'dummy', mimeType: 'text/plain'};
+    NativeModules.ClipboardModule = {copyText: mockCopyText};
+    ToastAndroid.show = mockToast;
+
+    render(<MainContent intentData={intentData} />);
+
+    const copyButton = await screen.findByTestId('copy-button');
+
+    expect(screen.getByTestId('copy-button')).toBeTruthy();
+
+    fireEvent.press(copyButton);
+
+    expect(mockCopyText).toHaveBeenCalled();
+    expect(mockCopyText).toHaveBeenCalledWith('dummy');
     expect(mockToast).toHaveBeenCalledWith(
       'Copied to your clipboard!',
       undefined,

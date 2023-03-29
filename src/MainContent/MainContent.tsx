@@ -136,8 +136,8 @@ const MainContent: React.FC<MainModalProps> = ({intentData}) => {
                 const {uri, type} = contentUri[index.current];
                 const {copyUri, copyText} = ClipboardModule;
                 type === ContentType.VIDEO
-                  ? copyText(uri)
-                  : copyUri(data as string);
+                  ? copyText(data as string)
+                  : copyUri(uri);
               }}>
               Copy to Clipboard
             </Button>
