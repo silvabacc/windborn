@@ -118,6 +118,7 @@ const MainContent: React.FC<MainModalProps> = ({intentData}) => {
                 <Video
                   testID="carousel-video"
                   resizeMode="cover"
+                  muted={true}
                   repeat
                   style={styles.content}
                   source={{uri: `file://${item.uri}`}}

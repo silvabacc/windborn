@@ -65,7 +65,7 @@ const fetchRedditVideoURL = async (
       'GET',
       `${RAPID_SAVE_URL}?permalink=${permalink}&video_url=${videoUrl}&audio_url=${audioUrl}`,
     )
-    .progress({interval: 100}, (received, total) => {
+    .progress({interval: 10}, (received, total) => {
       onProgress && onProgress(received / total);
     });
 
