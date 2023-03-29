@@ -79,6 +79,12 @@ const MainContent: React.FC<MainModalProps> = ({intentData}) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data]);
 
+  if (Array.isArray(data)) {
+    return (
+      <Text>Can't send multiple files. Only one file sharing is supported</Text>
+    );
+  }
+
   if (loading && !contentUri) {
     <ActivityIndicator />;
   }
@@ -127,7 +133,11 @@ const MainContent: React.FC<MainModalProps> = ({intentData}) => {
                   'Copied to your clipboard!',
                   ToastAndroid.SHORT,
                 );
-                ClipboardModule.copyUri(contentUri[index.current].uri);
+                const {uri, type} = contentUri[index.current];
+                const {copyUri, copyText} = ClipboardModule;
+                type === ContentType.VIDEO
+                  ? copyText(uri)
+                  : copyUri(data as string);
               }}>
               Copy to Clipboard
             </Button>

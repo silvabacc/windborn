@@ -34,6 +34,13 @@ public class ClipboardModule extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod
+  public void copyText(String text) {
+    ClipboardManager clipboard = (ClipboardManager) mReactContext.getSystemService(Context.CLIPBOARD_SERVICE);
+    ClipData clip = ClipData.newPlainText("reddit", text);
+    clipboard.setPrimaryClip(clip);
+  }
+
+  @ReactMethod
   public void copyBase64(String base64) {
     byte[] decodedBytes = Base64.decode(base64, Base64.DEFAULT);
     Bitmap bitmap = BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
