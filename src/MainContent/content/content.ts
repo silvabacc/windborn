@@ -19,13 +19,16 @@ const SESSION_NAME = 'videoconversion';
  * @param data Intent data
  * @returns string of URIs of the content
  */
-export const fetchContent = async (data: string): Promise<Content[]> => {
+export const fetchContent = async (
+  data: string,
+  onProgress?: Function,
+): Promise<Content[]> => {
   const redditIdRegex = /\/comments\/(\w+)\//;
 
   const redditId = data.match(redditIdRegex);
   if (redditId) {
     //Handle Reddit
-    return await redditCommentContent(redditId[1], data);
+    return await redditCommentContent(redditId[1], data, onProgress);
   }
 
   throw new Error('Content not found');
@@ -46,6 +49,7 @@ const fetchRedditVideoURL = async (
   videoUrl: string,
   audioUrl: string,
   permalink: string,
+  onProgress?: Function,
 ) => {
   RNFetchBlob.session(SESSION_NAME).dispose();
 
@@ -56,10 +60,14 @@ const fetchRedditVideoURL = async (
     session: SESSION_NAME,
     path: `${dirs.DocumentDir}/${nanoid()}.${fileExtension}`,
     fileCache: true,
-  }).fetch(
-    'GET',
-    `${RAPID_SAVE_URL}?permalink=${permalink}&video_url=${videoUrl}&audio_url=${audioUrl}`,
-  );
+  })
+    .fetch(
+      'GET',
+      `${RAPID_SAVE_URL}?permalink=${permalink}&video_url=${videoUrl}&audio_url=${audioUrl}`,
+    )
+    .progress({interval: 100}, (received, total) => {
+      onProgress && onProgress(received / total);
+    });
 
   return redditVideoResponse.path();
 };
@@ -74,7 +82,7 @@ const fetchRedditVideoURL = async (
  * @returns A URI location to the file
  */
 
-export const convertToUri = async (url: string) => {
+export const convertToUri = async (url: string, onProgress?: Function) => {
   RNFetchBlob.session(SESSION_NAME).dispose();
 
   const fileExtension = url.split('.').pop();
@@ -84,7 +92,11 @@ export const convertToUri = async (url: string) => {
     session: SESSION_NAME,
     path: `${dirs.DocumentDir}/${nanoid()}.${fileExtension}`,
     fileCache: true,
-  }).fetch('GET', url);
+  })
+    .fetch('GET', url)
+    .progress({interval: 250}, (received, total) => {
+      onProgress && onProgress(received / total);
+    });
 
   return response.path();
 };
@@ -110,6 +122,7 @@ export const convertToBase64 = async (url: string): Promise<string> => {
 export const redditCommentContent = async (
   id: string,
   permalink: string,
+  onProgress?: Function,
 ): Promise<Content[]> => {
   const redditCommentJson = `https://www.reddit.com/${id}.json`;
   const response = await axios.get<RedditResponse[]>(redditCommentJson);
@@ -128,6 +141,7 @@ export const redditCommentContent = async (
           contentData.media.reddit_video.fallback_url,
           `${contentData.url}/DASH_audio.mp4`,
           permalink,
+          onProgress,
         ),
         type: ContentType.VIDEO,
       },
@@ -141,7 +155,7 @@ export const redditCommentContent = async (
           contentData.media_metadata[media].m.match(/^image\/(.+)$/)[1];
         const url = `https://i.redd.it/${media}.${format}`;
         return {
-          uri: await convertToUri(url),
+          uri: await convertToUri(url, onProgress),
           type: ContentType.IMAGE,
         };
       },
@@ -151,7 +165,7 @@ export const redditCommentContent = async (
 
   return [
     {
-      uri: await convertToUri(contentData.url),
+      uri: await convertToUri(contentData.url, onProgress),
       type: ContentType.IMAGE,
     },
   ];

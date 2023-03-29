@@ -16,7 +16,7 @@ import {fetchContent} from './content/content';
 import Carousel from 'react-native-reanimated-carousel';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import Video from 'react-native-video';
-import {Button} from 'react-native-paper';
+import {Button, ProgressBar} from 'react-native-paper';
 import Share from 'react-native-share';
 import {Content, ContentType} from './content/types';
 
@@ -35,6 +35,7 @@ const MainContent: React.FC<MainModalProps> = ({intentData}) => {
   const index = useRef(0);
   const [error, setError] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
+  const [progress, setProgress] = useState<number>(0);
 
   const appState = useRef(AppState.currentState);
 
@@ -64,9 +65,9 @@ const MainContent: React.FC<MainModalProps> = ({intentData}) => {
     const getContentUri = async () => {
       try {
         if (mimeType.includes('text')) {
-          setContentUri(await fetchContent(data as string));
+          setContentUri(await fetchContent(data as string, setProgress));
         } else if (mimeType.includes('image')) {
-          setContentUri(await fetchContent(data as string));
+          setContentUri(await fetchContent(data as string, setProgress));
         } else {
           setError(true);
         }
@@ -157,7 +158,12 @@ const MainContent: React.FC<MainModalProps> = ({intentData}) => {
           </View>
         </View>
       ) : (
-        <ActivityIndicator testID="loading-indicator" />
+        <View
+          style={{justifyContent: 'space-between'}}
+          testID="loading-indicator">
+          <Text>Generating Preview... </Text>
+          <ProgressBar color={'#000'} animatedValue={progress} />
+        </View>
       )}
     </GestureHandlerRootView>
   );
@@ -174,6 +180,9 @@ const styles = StyleSheet.create({
   },
   content: {
     height: Dimensions.get('window').height * 0.5,
+  },
+  activityIndicator: {
+    paddingTop: 8,
   },
 });
 
