@@ -1,6 +1,8 @@
 export const mockFetch = jest
   .fn()
-  .mockImplementation(() => ({path: jest.fn()}));
+  .mockImplementation(() => ({
+    progress: jest.fn().mockImplementation(() => ({path: jest.fn()})),
+  }));
 export const mockConfig = jest.fn();
 
 const rnFBMock = {

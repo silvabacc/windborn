@@ -106,6 +106,22 @@ describe('Content', () => {
         'https://dummy.com/image.png',
       );
     });
+
+    it('should convert gifv to gif', async () => {
+      const url = 'https://dummy.com/funnycat.gifv';
+
+      await convertToUri(url);
+
+      expect(mockConfig).toHaveBeenCalledWith({
+        fileCache: true,
+        path: 'undefined/randomnanoid.gif',
+        session: 'videoconversion',
+      });
+      expect(mockFetch).toHaveBeenCalledWith(
+        'GET',
+        'https://dummy.com/funnycat.gif',
+      );
+    });
   });
 
   describe('convertToBase64', () => {
@@ -152,12 +168,12 @@ describe('Content', () => {
         'https://www.reddit.com/dummyId.json',
       );
       expect(mockFetch).toHaveBeenNthCalledWith(
-        5,
+        6,
         'GET',
         'https://i.redd.it/slfz80hz7ipa1.gif',
       );
       expect(mockFetch).toHaveBeenNthCalledWith(
-        6,
+        7,
         'GET',
         'https://i.redd.it/y1o4u5az7ipa1.jpg',
       );

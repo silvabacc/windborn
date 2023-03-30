@@ -85,7 +85,11 @@ const fetchRedditVideoURL = async (
 export const convertToUri = async (url: string, onProgress?: Function) => {
   RNFetchBlob.session(SESSION_NAME).dispose();
 
-  const fileExtension = url.split('.').pop();
+  const urlWithoutGifv = url.endsWith('gifv')
+    ? url.replace('.gifv', '.gif')
+    : url;
+
+  const fileExtension = urlWithoutGifv.split('.').pop();
   const dirs = RNFetchBlob.fs.dirs;
 
   const response = await RNFetchBlob.config({
@@ -93,7 +97,7 @@ export const convertToUri = async (url: string, onProgress?: Function) => {
     path: `${dirs.DocumentDir}/${nanoid()}.${fileExtension}`,
     fileCache: true,
   })
-    .fetch('GET', url)
+    .fetch('GET', urlWithoutGifv)
     .progress({interval: 250}, (received, total) => {
       onProgress && onProgress(received / total);
     });
