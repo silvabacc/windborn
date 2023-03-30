@@ -1,14 +1,17 @@
 interface Children {
-  data: {
-    url: string;
-    media_metadata?: any;
-    is_gallery?: boolean;
-    is_video: boolean;
-    post_hint: string;
-    media: {
-      reddit_video: {
-        fallback_url: string;
-      };
+  data: ChildData;
+}
+
+interface ChildData {
+  url: string;
+  media_metadata?: any;
+  is_gallery?: boolean;
+  is_video: boolean;
+  post_hint: string;
+  crosspost_parent_list?: ChildData[];
+  media: {
+    reddit_video: {
+      fallback_url: string;
     };
   };
 }

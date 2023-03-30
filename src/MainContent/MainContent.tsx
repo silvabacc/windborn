@@ -161,8 +161,10 @@ const MainContent: React.FC<MainModalProps> = ({intentData}) => {
         <View
           style={{justifyContent: 'space-between'}}
           testID="loading-indicator">
-          <Text>Generating Preview... </Text>
-          <ProgressBar color={'#000'} animatedValue={progress} />
+          <Text style={styles.text}>Generating Preview... </Text>
+          {progress !== 0 && (
+            <ProgressBar color={'#000'} animatedValue={progress} />
+          )}
         </View>
       )}
     </GestureHandlerRootView>
@@ -181,8 +183,8 @@ const styles = StyleSheet.create({
   content: {
     height: Dimensions.get('window').height * 0.5,
   },
-  activityIndicator: {
-    paddingTop: 8,
+  text: {
+    paddingBottom: 8,
   },
 });
 

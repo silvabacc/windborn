@@ -141,7 +141,13 @@ export const redditCommentContent = async (
   const redditCommentJson = `https://www.reddit.com/${id}.json`;
   const response = await axios.get<RedditResponse[]>(redditCommentJson);
 
-  const contentData = response.data[0].data.children[0].data;
+  //Supports Crossposts
+  const listingData = response.data[0].data.children[0].data;
+  const contentData =
+    listingData.post_hint === 'link'
+      ? response.data[0].data.children[0].data.crosspost_parent_list![0]
+      : response.data[0].data.children[0].data;
+
   const {is_video, is_gallery, post_hint} = contentData;
 
   if (!post_hint && !is_gallery) {

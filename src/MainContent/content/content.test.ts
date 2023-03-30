@@ -85,6 +85,31 @@ const errorResponse = {
   ],
 };
 
+const crosspostResponse = {
+  data: [
+    {
+      data: {
+        children: [
+          {
+            data: {
+              post_hint: 'link',
+              url: 'www.dummmy.com/crosspost',
+              is_video: false,
+              crosspost_parent_list: [
+                {
+                  post_hint: 'image',
+                  url: 'www.dummy.com/parentpost',
+                  is_video: false,
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+};
+
 const mockAxios = axios as jest.Mocked<any>;
 const mockAxiosGet = jest.fn();
 mockAxios.get = mockAxiosGet;
@@ -177,6 +202,16 @@ describe('Content', () => {
         'GET',
         'https://i.redd.it/y1o4u5az7ipa1.jpg',
       );
+    });
+
+    it('should reference parent link for crossposts', async () => {
+      mockAxiosGet.mockResolvedValue(crosspostResponse);
+      await redditCommentContent('dummyId', 'redditUrl');
+
+      expect(mockAxiosGet).toHaveBeenCalledWith(
+        'https://www.reddit.com/dummyId.json',
+      );
+      expect(mockFetch).toHaveBeenCalledWith('GET', 'www.dummy.com/parentpost');
     });
 
     it('should throw an error', async () => {
