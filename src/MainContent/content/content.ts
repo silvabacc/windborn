@@ -15,6 +15,16 @@ const {RAPID_SAVE_URL} = getConfig();
  */
 const SESSION_NAME = 'videoconversion';
 
+export const fetchImageShare = async (uri: string): Promise<Content[]> => {
+  await unlinkFilesFolder();
+
+  const uriComponents = uri.split('/');
+  const fileNameAndExtension = uriComponents[uriComponents.length - 1];
+  const destPath = `${RNFS.DocumentDirectoryPath}/${fileNameAndExtension}`;
+  await RNFS.copyFile(uri, destPath);
+  return [{uri: destPath, type: ContentType.IMAGE}];
+};
+
 /**
  *
  * @param data Intent data

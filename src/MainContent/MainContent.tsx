@@ -12,7 +12,7 @@ import {
   Text,
 } from 'react-native';
 import {useEffect, useState} from 'react';
-import {fetchContent} from './content/content';
+import {fetchContent, fetchImageShare} from './content/content';
 import Carousel from 'react-native-reanimated-carousel';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import Video from 'react-native-video';
@@ -67,7 +67,7 @@ const MainContent: React.FC<MainModalProps> = ({intentData}) => {
         if (mimeType.includes('text')) {
           setContentUri(await fetchContent(data as string, setProgress));
         } else if (mimeType.includes('image')) {
-          setContentUri(await fetchContent(data as string, setProgress));
+          setContentUri(await fetchImageShare(data as string));
         } else {
           setError(true);
         }

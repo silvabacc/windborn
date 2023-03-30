@@ -1,7 +1,13 @@
 import axios from 'axios';
+import {mockCopyFile} from '../../../testHelpers/react-native-fs-mock';
 import {mockConfig, mockFetch} from '../../../testHelpers/rn-fetch-blob-mock';
 import getConfig from '../../config';
-import {convertToBase64, convertToUri, redditCommentContent} from './content';
+import {
+  convertToBase64,
+  convertToUri,
+  fetchImageShare,
+  redditCommentContent,
+} from './content';
 
 jest.mock('rn-fetch-blob');
 jest.mock('axios');
@@ -146,6 +152,22 @@ describe('Content', () => {
         'GET',
         'https://dummy.com/funnycat.gif',
       );
+    });
+  });
+
+  describe('fetchImageShare', () => {
+    it('should copy the file', async () => {
+      const url =
+        'content://free.reddit.news.fileprovider/shared_files/h34h804xxsqa1.jpg';
+
+      const imageShare = await fetchImageShare(url);
+      expect(mockCopyFile).toHaveBeenCalledWith(
+        'content://free.reddit.news.fileprovider/shared_files/h34h804xxsqa1.jpg',
+        'undefined/h34h804xxsqa1.jpg',
+      );
+      expect(imageShare).toEqual([
+        {type: 'image', uri: 'undefined/h34h804xxsqa1.jpg'},
+      ]);
     });
   });
 

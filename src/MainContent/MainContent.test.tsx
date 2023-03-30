@@ -5,7 +5,7 @@ import {
   waitFor,
 } from '@testing-library/react-native';
 import React from 'react';
-import {fetchContent} from './content/content';
+import {fetchContent, fetchImageShare} from './content/content';
 import {Content, ContentType} from './content/types';
 import MainContent from './MainContent';
 import {NativeModules, ToastAndroid} from 'react-native';
@@ -19,6 +19,7 @@ jest.mock('react-native-share', () => ({
 jest.mock('react-native-reanimated');
 
 const mockFetchContent = fetchContent as jest.Mocked<any>;
+const mockFetchImageShare = fetchImageShare as jest.Mocked<any>;
 const mockCopyUri = jest.fn();
 const mockCopyText = jest.fn();
 const mockToast = jest.fn();
@@ -134,6 +135,13 @@ describe('<MainContent />', () => {
     fireEvent.press(shareButton);
 
     expect(mockOpen).toHaveBeenCalledWith({url: 'file://dummy'});
+  });
+
+  it('should handle image sharing', () => {
+    const intentData = {data: 'dummy', mimeType: 'image/jpeg'};
+    render(<MainContent intentData={intentData} />);
+
+    expect(mockFetchImageShare).toHaveBeenCalled();
   });
 
   it('should render the error message if mimetype is not supproted', () => {
