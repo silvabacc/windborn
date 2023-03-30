@@ -71,14 +71,14 @@ const Home: React.FC = () => {
           <video
             className="home-player"
             autoPlay
-            src="https://i.imgur.com/biXLEBs.mp4"
+            src="https://i.imgur.com/PLd3amJ.mp4"
             loop
             controls
           />
           <div className="modal-text">Sharing</div>
           <video
             className="home-player"
-            src="https://i.imgur.com/MJqpE12.mp4"
+            src="https://i.imgur.com/M6h1Ut2.mp4"
             loop
             controls
           />
