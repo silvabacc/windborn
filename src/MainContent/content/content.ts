@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, {HttpStatusCode} from 'axios';
 import 'react-native-get-random-values';
 import RNFetchBlob from 'rn-fetch-blob';
 import RNFS from 'react-native-fs';
@@ -66,7 +66,7 @@ const unlinkFilesFolder = async () => {
  * @param permalink URL to the reddit post. Prefably has to be a comments link
  * @returns A URI location to the file
  */
-const fetchRedditVideoURL = async (
+export const fetchRedditVideoURL = async (
   videoUrl: string,
   audioUrl: string,
   permalink: string,
@@ -77,6 +77,11 @@ const fetchRedditVideoURL = async (
   const fileExtension = 'mp4';
   const dirs = RNFetchBlob.fs.dirs;
 
+  const hasAudio = (await axios.get(audioUrl)).status;
+
+  const audioParameter =
+    hasAudio === HttpStatusCode.Forbidden ? false : audioUrl;
+
   const redditVideoResponse = await RNFetchBlob.config({
     session: SESSION_NAME,
     path: `${dirs.DocumentDir}/${nanoid()}.${fileExtension}`,
@@ -84,7 +89,7 @@ const fetchRedditVideoURL = async (
   })
     .fetch(
       'GET',
-      `${RAPID_SAVE_URL}?permalink=${permalink}&video_url=${videoUrl}&audio_url=${audioUrl}`,
+      `${RAPID_SAVE_URL}?permalink=${permalink}&video_url=${videoUrl}&audio_url=${audioParameter}`,
     )
     .progress({interval: 10}, (received, total) => {
       onProgress && onProgress(received / total);

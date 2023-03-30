@@ -6,6 +6,7 @@ import {
   convertToBase64,
   convertToUri,
   fetchImageShare,
+  fetchRedditVideoURL,
   redditCommentContent,
 } from './content';
 
@@ -117,7 +118,7 @@ const crosspostResponse = {
 };
 
 const mockAxios = axios as jest.Mocked<any>;
-const mockAxiosGet = jest.fn();
+const mockAxiosGet = jest.fn().mockImplementation(() => ({status: 200}));
 mockAxios.get = mockAxiosGet;
 
 describe('Content', () => {
@@ -182,6 +183,34 @@ describe('Content', () => {
     });
   });
 
+  describe('fetchRedditVideoURL', () => {
+    it('should pass the audio_url parameter', async () => {
+      const videoUrl = 'www.dummy.com/video.mp4';
+      const audioUrl = 'www.dummy.com/audio.mp4';
+      const permalink = 'www.dummy.com/1234';
+
+      await fetchRedditVideoURL(videoUrl, audioUrl, permalink);
+
+      expect(mockFetch).toHaveBeenCalledWith(
+        'GET',
+        'https://sd.rapidsave.com/download.php?permalink=www.dummy.com/1234&video_url=www.dummy.com/video.mp4&audio_url=www.dummy.com/audio.mp4',
+      );
+    });
+
+    it('should pass audio_url as false', async () => {
+      mockAxiosGet.mockImplementationOnce(() => ({status: 403}));
+      const videoUrl = 'www.dummy.com/video.mp4';
+      const audioUrl = 'www.dummy.com/audio.mp4';
+      const permalink = 'www.dummy.com/1234';
+
+      await fetchRedditVideoURL(videoUrl, audioUrl, permalink);
+      expect(mockFetch).toHaveBeenCalledWith(
+        'GET',
+        'https://sd.rapidsave.com/download.php?permalink=www.dummy.com/1234&video_url=www.dummy.com/video.mp4&audio_url=false',
+      );
+    });
+  });
+
   describe('redditCommentContent', () => {
     it('should make the correct call for single images', async () => {
       mockAxiosGet.mockResolvedValue(singleImageResponse);
@@ -215,12 +244,12 @@ describe('Content', () => {
         'https://www.reddit.com/dummyId.json',
       );
       expect(mockFetch).toHaveBeenNthCalledWith(
-        6,
+        8,
         'GET',
         'https://i.redd.it/slfz80hz7ipa1.gif',
       );
       expect(mockFetch).toHaveBeenNthCalledWith(
-        7,
+        9,
         'GET',
         'https://i.redd.it/y1o4u5az7ipa1.jpg',
       );

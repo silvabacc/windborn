@@ -149,9 +149,11 @@ const MainContent: React.FC<MainModalProps> = ({intentData}) => {
               icon="share"
               onPress={async () => {
                 const {uri} = contentUri[index.current];
-                Share.open({
-                  url: `file://${uri}`,
-                });
+                try {
+                  await Share.open({
+                    url: `file://${uri}`,
+                  });
+                } catch (error) {}
               }}>
               Share
             </Button>
