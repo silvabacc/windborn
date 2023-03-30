@@ -1,6 +1,7 @@
 import axios from 'axios';
 import 'react-native-get-random-values';
 import RNFetchBlob from 'rn-fetch-blob';
+import RNFS from 'react-native-fs';
 import {nanoid} from 'nanoid';
 import {Content, ContentType, RedditResponse} from './types';
 import getConfig from '../../config';
@@ -35,6 +36,14 @@ export const fetchContent = async (
 };
 
 /**
+ * We store images/videos into a folder called 'files'. The contents should be
+ * recursively deleted often
+ */
+const unlinkFilesFolder = async () => {
+  RNFS.unlink(`${RNFS.DocumentDirectoryPath}`);
+};
+
+/**
  * This function downloads and saves the Reddit videos to a temporary file
  * Everytme we make a new request to a url, the previous files will be disposed
  * This uses an external API to fetch reddit videos specifically as Reddit hosted videos
@@ -51,7 +60,7 @@ const fetchRedditVideoURL = async (
   permalink: string,
   onProgress?: Function,
 ) => {
-  RNFetchBlob.session(SESSION_NAME).dispose();
+  unlinkFilesFolder();
 
   const fileExtension = 'mp4';
   const dirs = RNFetchBlob.fs.dirs;
@@ -75,6 +84,7 @@ const fetchRedditVideoURL = async (
 /**
  * This function downloads and saves the resource found in the URL to a temporary file
  * Everytme we make a new request to a url, the previous files will be disposed
+ * This function will also replace gifv with gif. Ensure the URL has gif counterpart
  *
  * @param url A URL to a resource like an image/mp4
  * @param contentType The type of content this is e.g. if resource is jpeg,
@@ -83,7 +93,7 @@ const fetchRedditVideoURL = async (
  */
 
 export const convertToUri = async (url: string, onProgress?: Function) => {
-  RNFetchBlob.session(SESSION_NAME).dispose();
+  unlinkFilesFolder();
 
   const urlWithoutGifv = url.endsWith('gifv')
     ? url.replace('.gifv', '.gif')
