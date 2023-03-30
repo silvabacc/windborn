@@ -40,7 +40,9 @@ export const fetchContent = async (
  * recursively deleted often
  */
 const unlinkFilesFolder = async () => {
-  RNFS.unlink(`${RNFS.DocumentDirectoryPath}`);
+  try {
+    await RNFS.unlink(`${RNFS.DocumentDirectoryPath}`);
+  } catch (error) {}
 };
 
 /**
@@ -60,7 +62,7 @@ const fetchRedditVideoURL = async (
   permalink: string,
   onProgress?: Function,
 ) => {
-  unlinkFilesFolder();
+  await unlinkFilesFolder();
 
   const fileExtension = 'mp4';
   const dirs = RNFetchBlob.fs.dirs;
@@ -93,7 +95,7 @@ const fetchRedditVideoURL = async (
  */
 
 export const convertToUri = async (url: string, onProgress?: Function) => {
-  unlinkFilesFolder();
+  await unlinkFilesFolder();
 
   const urlWithoutGifv = url.endsWith('gifv')
     ? url.replace('.gifv', '.gif')
