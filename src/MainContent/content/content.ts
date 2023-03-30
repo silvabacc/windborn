@@ -51,7 +51,10 @@ export const fetchContent = async (
  */
 const unlinkFilesFolder = async () => {
   try {
-    await RNFS.unlink(`${RNFS.DocumentDirectoryPath}`);
+    if (await RNFS.exists(RNFS.DocumentDirectoryPath)) {
+      await RNFS.unlink(RNFS.DocumentDirectoryPath);
+    }
+    await RNFS.mkdir(RNFS.DocumentDirectoryPath);
   } catch (error) {}
 };
 
