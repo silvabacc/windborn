@@ -8,6 +8,7 @@
     "lint": "eslint .",
     "start": "react-native start",
     "start:release": "react-native run-android --mode release",
+    "build:release": "cd android && ./gradlew bundleRelease",
     "test": "jest"
   },
   "dependencies": {
