@@ -23,6 +23,7 @@ public class WindbornPackages implements ReactPackage {
 
        modules.add(new ExitModule(reactContext));
        modules.add(new ClipboardModule(reactContext));
+       modules.add(new SharingModule(reactContext));
 
        return modules;
    }

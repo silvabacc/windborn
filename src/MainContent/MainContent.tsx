@@ -17,7 +17,6 @@ import Carousel from 'react-native-reanimated-carousel';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import Video from 'react-native-video';
 import {Button, ProgressBar} from 'react-native-paper';
-import Share from 'react-native-share';
 import {Content, ContentType} from './content/types';
 
 interface MainModalProps {
@@ -28,7 +27,7 @@ const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
 const MainContent: React.FC<MainModalProps> = ({intentData}) => {
-  const {ClipboardModule} = NativeModules;
+  const {ClipboardModule, SharingModule} = NativeModules;
   const {data, mimeType} = intentData;
 
   const [contentUri, setContentUri] = useState<Content[]>();
@@ -72,7 +71,6 @@ const MainContent: React.FC<MainModalProps> = ({intentData}) => {
           setError(true);
         }
       } catch (error) {
-        console.log(error);
         setError(true);
       }
     };
@@ -150,10 +148,9 @@ const MainContent: React.FC<MainModalProps> = ({intentData}) => {
               icon="share"
               onPress={async () => {
                 const {uri} = contentUri[index.current];
+                const fileExtension = uri.split('.').pop();
                 try {
-                  await Share.open({
-                    url: `file://${uri}`,
-                  });
+                  await SharingModule.share(uri, fileExtension);
                 } catch (error) {}
               }}>
               Share

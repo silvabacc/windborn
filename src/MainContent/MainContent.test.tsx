@@ -10,22 +10,18 @@ import {Content, ContentType} from './content/types';
 import MainContent from './MainContent';
 import {NativeModules, ToastAndroid} from 'react-native';
 
-const mockOpen = jest.fn();
-
 jest.mock('./content/content');
-jest.mock('react-native-share', () => ({
-  open: (value: any) => mockOpen(value),
-}));
 jest.mock('react-native-reanimated');
 
 const mockFetchContent = fetchContent as jest.Mocked<any>;
 const mockFetchImageShare = fetchImageShare as jest.Mocked<any>;
 const mockCopyUri = jest.fn();
+const mockShare = jest.fn();
 const mockCopyText = jest.fn();
 const mockToast = jest.fn();
 
 mockFetchContent.mockReturnValue([
-  {uri: 'dummy', type: ContentType.IMAGE} as Content,
+  {uri: 'dummy.jpg', type: ContentType.IMAGE} as Content,
 ]);
 
 describe('<MainContent />', () => {
@@ -129,12 +125,14 @@ describe('<MainContent />', () => {
 
   it('should share the content', async () => {
     const intentData = {data: 'dummy', mimeType: 'text/plain'};
+    NativeModules.SharingModule = {share: mockShare};
+
     render(<MainContent intentData={intentData} />);
 
     const shareButton = await screen.findByTestId('share-button');
     fireEvent.press(shareButton);
 
-    expect(mockOpen).toHaveBeenCalledWith({url: 'file://dummy'});
+    expect(mockShare).toHaveBeenCalledWith('dummy.jpg', 'jpg');
   });
 
   it('should handle image sharing', () => {
