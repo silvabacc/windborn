@@ -72,6 +72,7 @@ const MainContent: React.FC<MainModalProps> = ({intentData}) => {
           setError(true);
         }
       } catch (error) {
+        console.log(error);
         setError(true);
       }
     };

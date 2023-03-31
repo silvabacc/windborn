@@ -6,7 +6,6 @@ import {
   convertToBase64,
   convertToUri,
   fetchImageShare,
-  fetchRedditVideoURL,
   redditCommentContent,
 } from './content';
 
@@ -183,34 +182,6 @@ describe('Content', () => {
     });
   });
 
-  describe('fetchRedditVideoURL', () => {
-    it('should pass the audio_url parameter', async () => {
-      const videoUrl = 'www.dummy.com/video.mp4';
-      const audioUrl = 'www.dummy.com/audio.mp4';
-      const permalink = 'www.dummy.com/1234';
-
-      await fetchRedditVideoURL(videoUrl, audioUrl, permalink);
-
-      expect(mockFetch).toHaveBeenCalledWith(
-        'GET',
-        'https://sd.rapidsave.com/download.php?permalink=www.dummy.com/1234&video_url=www.dummy.com/video.mp4&audio_url=www.dummy.com/audio.mp4',
-      );
-    });
-
-    it('should pass audio_url as false', async () => {
-      mockAxiosGet.mockImplementationOnce(() => ({status: 403}));
-      const videoUrl = 'www.dummy.com/video.mp4';
-      const audioUrl = 'www.dummy.com/audio.mp4';
-      const permalink = 'www.dummy.com/1234';
-
-      await fetchRedditVideoURL(videoUrl, audioUrl, permalink);
-      expect(mockFetch).toHaveBeenCalledWith(
-        'GET',
-        'https://sd.rapidsave.com/download.php?permalink=www.dummy.com/1234&video_url=www.dummy.com/video.mp4&audio_url=false',
-      );
-    });
-  });
-
   describe('redditCommentContent', () => {
     it('should make the correct call for single images', async () => {
       mockAxiosGet.mockResolvedValue(singleImageResponse);
@@ -233,6 +204,34 @@ describe('Content', () => {
       expect(mockFetch).toHaveBeenCalledWith(
         'GET',
         `${RAPID_SAVE_URL}?permalink=redditUrl&video_url=www.fallbackurl.com/video.mp4?source=fallback&audio_url=www.reddit.com/123456/DASH_audio.mp4`,
+      );
+    });
+
+    it('should check audio and pass correct argument if audio exists', async () => {
+      mockAxiosGet.mockResolvedValueOnce(videoResponse);
+      mockAxiosGet.mockImplementationOnce(() => ({status: 200}));
+      await redditCommentContent('dummyId', 'redditUrl');
+
+      expect(mockAxiosGet).toHaveBeenCalledWith(
+        'https://www.reddit.com/dummyId.json',
+      );
+      expect(mockFetch).toHaveBeenCalledWith(
+        'GET',
+        `${RAPID_SAVE_URL}?permalink=redditUrl&video_url=www.fallbackurl.com/video.mp4?source=fallback&audio_url=www.reddit.com/123456/DASH_audio.mp4`,
+      );
+    });
+
+    it('should check audio and pass correct argument if audio does not exists', async () => {
+      mockAxiosGet.mockResolvedValueOnce(videoResponse);
+      mockAxiosGet.mockImplementationOnce(() => ({status: 403}));
+      await redditCommentContent('dummyId', 'redditUrl');
+
+      expect(mockAxiosGet).toHaveBeenCalledWith(
+        'https://www.reddit.com/dummyId.json',
+      );
+      expect(mockFetch).toHaveBeenCalledWith(
+        'GET',
+        `${RAPID_SAVE_URL}?permalink=redditUrl&video_url=www.fallbackurl.com/video.mp4?source=fallback&audio_url=false`,
       );
     });
 

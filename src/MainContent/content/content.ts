@@ -69,9 +69,9 @@ const unlinkFilesFolder = async () => {
  * @param permalink URL to the reddit post. Prefably has to be a comments link
  * @returns A URI location to the file
  */
-export const fetchRedditVideoURL = async (
-  videoUrl: string,
-  audioUrl: string,
+export const fetchRedditVideoURI = async (
+  videoParameter: string,
+  audioParameter: string | false,
   permalink: string,
   onProgress?: Function,
 ) => {
@@ -80,11 +80,6 @@ export const fetchRedditVideoURL = async (
   const fileExtension = 'mp4';
   const dirs = RNFetchBlob.fs.dirs;
 
-  const hasAudio = (await axios.get(audioUrl)).status;
-
-  const audioParameter =
-    hasAudio === HttpStatusCode.Forbidden ? false : audioUrl;
-
   const redditVideoResponse = await RNFetchBlob.config({
     session: SESSION_NAME,
     path: `${dirs.DocumentDir}/${nanoid()}.${fileExtension}`,
@@ -92,7 +87,7 @@ export const fetchRedditVideoURL = async (
   })
     .fetch(
       'GET',
-      `${RAPID_SAVE_URL}?permalink=${permalink}&video_url=${videoUrl}&audio_url=${audioParameter}`,
+      `${RAPID_SAVE_URL}?permalink=${permalink}&video_url=${videoParameter}&audio_url=${audioParameter}`,
     )
     .progress({interval: 10}, (received, total) => {
       onProgress && onProgress(received / total);
@@ -175,11 +170,22 @@ export const redditCommentContent = async (
   }
 
   if (is_video) {
+    //We check if audio exists by taking the content url and simply adding DASH_audio.mp4
+    //Reddit hosts audio in this way.
+    let audioParameter: string | boolean = false;
+    const audioUrl = `${contentData.url}/DASH_audio.mp4`;
+    try {
+      audioParameter =
+        (await axios.get(audioUrl)).status !== HttpStatusCode.Forbidden
+          ? audioUrl
+          : false;
+    } catch (error) {}
+
     return [
       {
-        uri: await fetchRedditVideoURL(
+        uri: await fetchRedditVideoURI(
           contentData.media.reddit_video.fallback_url,
-          `${contentData.url}/DASH_audio.mp4`,
+          audioParameter,
           permalink,
           onProgress,
         ),
