@@ -3,6 +3,7 @@ import React, {useEffect, useState} from 'react';
 import ShareMenu, {ShareData} from 'react-native-share-menu';
 import {StatusBar} from 'react-native';
 import Windborn from './src/Windborn';
+import {DefaultTheme, Provider} from 'react-native-paper';
 
 function App(): JSX.Element {
   const [intentData, setIntentData] = useState<ShareData>();
@@ -26,7 +27,20 @@ function App(): JSX.Element {
     StatusBar.setBackgroundColor('transparent');
   }, []);
 
-  return <Windborn intentData={intentData} />;
+  return (
+    <Provider theme={theme}>
+      <Windborn intentData={intentData} />
+    </Provider>
+  );
 }
+
+const theme = {
+  ...DefaultTheme,
+  roundness: 1,
+  colors: {
+    ...DefaultTheme.colors,
+    primary: '#000',
+  },
+};
 
 export default App;

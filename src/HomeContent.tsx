@@ -1,7 +1,8 @@
 import React from 'react';
 import {Text, StyleSheet, NativeModules, View, PixelRatio} from 'react-native';
+import {Button} from 'react-native-paper';
+import {RFPercentage} from 'react-native-responsive-fontsize';
 import Video from 'react-native-video';
-import Button from './Common/Button';
 
 const HomeContent: React.FC = () => {
   return (
@@ -18,31 +19,38 @@ const HomeContent: React.FC = () => {
         resizeMode={'contain'}
         style={styles.video}
       />
-      <Button
-        title="Close"
-        onPress={() => NativeModules.ExitModule.exitApp()}
-      />
+      <View style={styles.button}>
+        <Button
+          mode="contained"
+          onPress={() => NativeModules.ExitModule.exitApp()}>
+          Close
+        </Button>
+      </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   modalContainer: {
-    flex: 1,
     justifyContent: 'space-evenly',
     alignItems: 'center',
   },
   modalHeader: {
     fontWeight: 'bold',
+    fontSize: RFPercentage(3),
   },
   modalText: {
-    marginBottom: 15,
     textAlign: 'center',
     color: 'black',
+    margin: 16,
+    fontSize: RFPercentage(2),
   },
   video: {
-    height: '70%',
+    flex: 2,
     width: PixelRatio.getPixelSizeForLayoutSize(300),
+  },
+  button: {
+    padding: 16,
   },
 });
 

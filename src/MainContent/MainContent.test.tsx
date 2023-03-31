@@ -5,101 +5,173 @@ import {
   waitFor,
 } from '@testing-library/react-native';
 import React from 'react';
-import {NativeModules} from 'react-native';
-import {fetchImageBase64, convertImageToBase64} from './imageBase64';
+import {fetchContent, fetchImageShare} from './content/content';
+import {Content, ContentType} from './content/types';
 import MainContent from './MainContent';
+import {NativeModules, ToastAndroid} from 'react-native';
 
-jest.mock('./imageBase64');
-jest.mock('rn-fetch-blob');
+const mockOpen = jest.fn();
 
-const mockClipboardModule = jest.fn();
+jest.mock('./content/content');
+jest.mock('react-native-share', () => ({
+  open: (value: any) => mockOpen(value),
+}));
+jest.mock('react-native-reanimated');
 
-const mockFetchImageBase64 = fetchImageBase64 as jest.Mocked<any>;
-const mockConvertImageToBase64 = convertImageToBase64 as jest.Mocked<any>;
+const mockFetchContent = fetchContent as jest.Mocked<any>;
+const mockFetchImageShare = fetchImageShare as jest.Mocked<any>;
+const mockCopyUri = jest.fn();
+const mockCopyText = jest.fn();
+const mockToast = jest.fn();
 
-mockConvertImageToBase64.mockReturnValue('image');
-mockFetchImageBase64.mockReturnValue('image');
+mockFetchContent.mockReturnValue([
+  {uri: 'dummy', type: ContentType.IMAGE} as Content,
+]);
 
 describe('<MainContent />', () => {
-  it('should handle text mimetype', () => {
-    const intentData = {
-      data: '',
-      mimeType: 'text/plain',
-    };
+  it('should render the carouel', async () => {
+    const intentData = {data: 'dummy', mimeType: 'text/plain'};
+
     render(<MainContent intentData={intentData} />);
 
-    expect(mockFetchImageBase64).toHaveBeenCalled();
+    expect(await screen.findByTestId('carousel')).toBeTruthy();
   });
 
-  it.each(['image/*', 'image/png', 'image/jpg'])(
-    'should handle image mimetype',
-    mimeType => {
-      const intentData = {
-        data: '',
-        mimeType,
-      };
+  it.each([Object.values(ContentType)])(
+    'should render %s type with the correct component',
+    async type => {
+      mockFetchContent.mockReturnValueOnce([{uri: 'dummy', type} as Content]);
+
+      const intentData = {data: '', mimeType: 'text/plain'};
 
       render(<MainContent intentData={intentData} />);
 
-      expect(mockFetchImageBase64).toHaveBeenCalled();
+      expect(await screen.findByTestId('carousel')).toBeTruthy();
+      await waitFor(
+        () => expect(screen.findByTestId(`carousel-${type}`)).toBeTruthy(),
+        {timeout: 5000},
+      );
     },
   );
 
-  it('should render the clipboard menu', async () => {
-    const intentData = {
-      data: 'dummy_image_url',
-      mimeType: 'text/plain',
-    };
+  it('should render %s type with the correct component', async () => {
+    const intentData = {data: '', mimeType: 'text/plain'};
 
     render(<MainContent intentData={intentData} />);
 
-    await waitFor(() => {
-      expect(screen.getByTestId('clipboard-menu')).toBeTruthy();
-    });
+    expect(await screen.findByTestId('carousel')).toBeTruthy();
+    await waitFor(
+      () =>
+        expect(
+          screen.findByTestId(`carousel-${ContentType.IMAGE}`),
+        ).toBeTruthy(),
+      {timeout: 5000},
+    );
   });
 
-  it('should copy the image when clicking on button', async () => {
-    NativeModules.ClipboardModule = {copyBase64: mockClipboardModule};
+  it('should render loading', async () => {
+    const data = {url: 'dummy', mimeType: 'text/plain'};
+    mockFetchContent.mockReturnValueOnce([]);
+    render(<MainContent intentData={data as any} />);
 
-    const intentData = {
-      data: 'dummy_image_url',
-      mimeType: 'text/plain',
-    };
+    expect(await screen.findByTestId('loading-indicator')).toBeTruthy();
+  });
+
+  it('should copy content to clipboard for images', async () => {
+    mockFetchContent.mockReturnValueOnce([
+      {uri: 'dummy', type: ContentType.IMAGE} as Content,
+    ]);
+
+    const intentData = {data: 'dummy', mimeType: 'text/plain'};
+    NativeModules.ClipboardModule = {copyUri: mockCopyUri};
+    ToastAndroid.show = mockToast;
 
     render(<MainContent intentData={intentData} />);
 
-    await waitFor(() => {
-      expect(screen.getByTestId('clipboard-menu')).toBeTruthy();
-    });
+    const copyButton = await screen.findByTestId('copy-button');
 
-    fireEvent.press(screen.getByTestId('copy-clipboard-button'));
+    expect(screen.getByTestId('copy-button')).toBeTruthy();
+
+    fireEvent.press(copyButton);
+
+    expect(mockCopyUri).toHaveBeenCalled();
+    expect(mockCopyUri).toHaveBeenCalledWith('dummy');
+    expect(mockToast).toHaveBeenCalledWith(
+      'Copied to your clipboard!',
+      undefined,
+    );
   });
 
-  it('should be loading', () => {
-    const intentData = {
-      data: 'dummy_image_url',
-      mimeType: 'text/plain',
-    };
+  it('should copy url to clipboard for videos', async () => {
+    mockFetchContent.mockReturnValueOnce([
+      {uri: 'dummy', type: ContentType.VIDEO} as Content,
+    ]);
+
+    const intentData = {data: 'dummy', mimeType: 'text/plain'};
+    NativeModules.ClipboardModule = {copyText: mockCopyText};
+    ToastAndroid.show = mockToast;
 
     render(<MainContent intentData={intentData} />);
 
-    expect(screen.getByText('Preparing preview...')).toBeTruthy();
+    const copyButton = await screen.findByTestId('copy-button');
+
+    expect(screen.getByTestId('copy-button')).toBeTruthy();
+
+    fireEvent.press(copyButton);
+
+    expect(mockCopyText).toHaveBeenCalled();
+    expect(mockCopyText).toHaveBeenCalledWith('dummy');
+    expect(mockToast).toHaveBeenCalledWith(
+      'Copied to your clipboard!',
+      undefined,
+    );
   });
 
-  it('should render the error message', () => {
-    const intentData = {
-      data: 'dummy_image_url',
-      mimeType: 'text/plain',
-    };
+  it('should share the content', async () => {
+    const intentData = {data: 'dummy', mimeType: 'text/plain'};
+    render(<MainContent intentData={intentData} />);
 
-    mockFetchImageBase64.mockImplementationOnce(() => {
-      throw new Error();
+    const shareButton = await screen.findByTestId('share-button');
+    fireEvent.press(shareButton);
+
+    expect(mockOpen).toHaveBeenCalledWith({url: 'file://dummy'});
+  });
+
+  it('should handle image sharing', () => {
+    const intentData = {data: 'dummy', mimeType: 'image/jpeg'};
+    render(<MainContent intentData={intentData} />);
+
+    expect(mockFetchImageShare).toHaveBeenCalled();
+  });
+
+  it('should render the error message if mimetype is not supproted', () => {
+    const intentData = {data: 'dummy', mimeType: 'unknown'};
+
+    render(<MainContent intentData={intentData} />);
+
+    expect(screen.getByText('Unsupported File Type')).toBeTruthy();
+  });
+
+  it('should render the error message if something went wrong', () => {
+    const intentData = {data: 'dummy', mimeType: 'unknown'};
+    mockFetchContent.mockImplementation(() => {
+      throw new Error('Something went wrong');
     });
+
+    render(<MainContent intentData={intentData} />);
+
+    expect(screen.getByText('Unsupported File Type')).toBeTruthy();
+  });
+
+  it('should render message for unsupported multiple files', () => {
+    const intentData = {data: ['dummy', 'dummy2'], mimeType: 'image/jpeg'};
 
     render(<MainContent intentData={intentData} />);
 
     expect(
-      screen.getByText("Oops, this post doesn't seem to have any images"),
+      screen.getByText(
+        "Can't send multiple files. Only one file sharing is supported",
+      ),
     ).toBeTruthy();
   });
 });

@@ -1,11 +1,10 @@
-/* eslint-disable react/react-in-jsx-scope */
+import React from 'react';
 import {
-  Modal,
   TouchableOpacity,
   TouchableWithoutFeedback,
   StyleSheet,
-  NativeModules,
   View,
+  NativeModules,
 } from 'react-native';
 
 interface WindbornModalProps {
@@ -14,17 +13,15 @@ interface WindbornModalProps {
 
 const WindbornModal: React.FC<WindbornModalProps> = ({content}) => {
   return (
-    <Modal animationType="fade" transparent={true}>
-      <TouchableOpacity
-        activeOpacity={1}
-        style={styles.centeredView}
-        testID="modal-container"
-        onPress={() => NativeModules.ExitModule.exitApp()}>
-        <TouchableWithoutFeedback>
-          <View style={styles.modalView}>{content}</View>
-        </TouchableWithoutFeedback>
-      </TouchableOpacity>
-    </Modal>
+    <TouchableOpacity
+      activeOpacity={1}
+      style={styles.centeredView}
+      testID="modal-container"
+      onPress={() => NativeModules.ExitModule.exitApp()}>
+      <TouchableWithoutFeedback>
+        <View style={styles.modalView}>{content}</View>
+      </TouchableWithoutFeedback>
+    </TouchableOpacity>
   );
 };
 

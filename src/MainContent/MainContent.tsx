@@ -2,37 +2,47 @@ import React, {useRef} from 'react';
 import {ShareData} from 'react-native-share-menu';
 import {
   View,
-  Text,
   StyleSheet,
   NativeModules,
-  Image,
-  ToastAndroid,
   AppState,
   ActivityIndicator,
+  Dimensions,
+  Image,
+  ToastAndroid,
+  Text,
 } from 'react-native';
 import {useEffect, useState} from 'react';
-import Button from '../Common/Button';
-import {convertImageToBase64, fetchImageBase64} from './imageBase64';
+import {fetchContent, fetchImageShare} from './content/content';
+import Carousel from 'react-native-reanimated-carousel';
+import {GestureHandlerRootView} from 'react-native-gesture-handler';
+import Video from 'react-native-video';
+import {Button, ProgressBar} from 'react-native-paper';
 import Share from 'react-native-share';
+import {Content, ContentType} from './content/types';
 
 interface MainModalProps {
   intentData: ShareData;
 }
 
+const windowWidth = Dimensions.get('window').width;
+const windowHeight = Dimensions.get('window').height;
+
 const MainContent: React.FC<MainModalProps> = ({intentData}) => {
   const {ClipboardModule} = NativeModules;
-  const {data} = intentData;
+  const {data, mimeType} = intentData;
 
-  const [imageBase64, setImageBase64] = useState<string>();
+  const [contentUri, setContentUri] = useState<Content[]>();
+  const index = useRef(0);
   const [error, setError] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
+  const [progress, setProgress] = useState<number>(0);
 
   const appState = useRef(AppState.currentState);
 
-  //This is required so that if the user shares and comes back to the previous screen
-  //and they want to share once again, the imageBase64 should be reset so that we can
-  //show the new preview with the new intent data and this component should wait and
-  //listen for the changes for the intent data. Listener for intent data is declared in App.tsx
+  // //This is required so that if the user shares and comes back to the previous screen
+  // //and they want to share once again, the imageBase64 should be reset so that we can
+  // //show the new preview with the new intent data and this component should wait and
+  // //listen for the changes for the intent data. Listener for intent data is declared in App.tsx
   useEffect(() => {
     const subscription = AppState.addEventListener('change', nextAppState => {
       if (
@@ -40,7 +50,7 @@ const MainContent: React.FC<MainModalProps> = ({intentData}) => {
         nextAppState === 'active'
       ) {
         setLoading(true);
-        setImageBase64(undefined);
+        setContentUri(undefined);
       }
 
       appState.current = nextAppState;
@@ -52,82 +62,132 @@ const MainContent: React.FC<MainModalProps> = ({intentData}) => {
   }, []);
 
   useEffect(() => {
-    const getImageBase64 = async () => {
+    const getContentUri = async () => {
       try {
-        const image = intentData.mimeType.includes('image')
-          ? await convertImageToBase64(data as string)
-          : await fetchImageBase64(data as string);
-        setImageBase64(image);
+        if (mimeType.includes('text')) {
+          setContentUri(await fetchContent(data as string, setProgress));
+        } else if (mimeType.includes('image')) {
+          setContentUri(await fetchImageShare(data as string));
+        } else {
+          setError(true);
+        }
       } catch (error) {
+        console.log(error);
         setError(true);
       }
     };
 
-    getImageBase64();
+    getContentUri();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data]);
 
-  //Indicate to the user's that they are fetching the new intent
-  if (loading && !imageBase64) {
-    return <ActivityIndicator />;
+  if (Array.isArray(data)) {
+    return (
+      <Text>Can't send multiple files. Only one file sharing is supported</Text>
+    );
+  }
+
+  if (loading && !contentUri) {
+    <ActivityIndicator />;
+  }
+
+  if (error) {
+    return <Text>Unsupported File Type</Text>;
   }
 
   return (
-    <View testID="main-content-view">
-      {imageBase64 ? (
-        <View testID="clipboard-menu">
-          <Image
-            source={{uri: `data:image/png;base64,${imageBase64}`}}
-            style={styles.image}
+    <GestureHandlerRootView>
+      {contentUri?.length ? (
+        <View style={styles.container}>
+          <Carousel
+            testID="carousel"
+            loop
+            width={windowWidth - 40}
+            height={windowHeight * 0.5}
+            data={contentUri}
+            onSnapToItem={prop => (index.current = prop)}
+            renderItem={({item}) => {
+              return item.type === ContentType.IMAGE ? (
+                <Image
+                  testID="carousel-image"
+                  style={styles.content}
+                  source={{
+                    uri: `file://${item.uri}`,
+                  }}
+                />
+              ) : (
+                <Video
+                  testID="carousel-video"
+                  resizeMode="cover"
+                  muted={true}
+                  repeat
+                  style={styles.content}
+                  source={{uri: `file://${item.uri}`}}
+                />
+              );
+            }}
           />
-          <View style={styles.buttonContainer}>
+          <View style={styles.buttonsContainer}>
             <Button
-              title="Copy to Clipboard"
-              style={styles.copyButton}
-              onPress={() => {
+              mode="contained"
+              testID="copy-button"
+              onPress={async () => {
                 ToastAndroid.show(
                   'Copied to your clipboard!',
                   ToastAndroid.SHORT,
                 );
-                ClipboardModule.copyBase64(imageBase64);
-              }}
-            />
+                const {uri, type} = contentUri[index.current];
+                const {copyUri, copyText} = ClipboardModule;
+                type === ContentType.VIDEO
+                  ? copyText(data as string)
+                  : copyUri(uri);
+              }}>
+              Copy to Clipboard
+            </Button>
             <Button
-              onPress={async () => {
-                Share.open({
-                  url: `data:image/png;base64,${imageBase64}`,
-                });
-              }}
+              testID="share-button"
+              mode="contained"
               icon="share"
-            />
+              onPress={async () => {
+                const {uri} = contentUri[index.current];
+                try {
+                  await Share.open({
+                    url: `file://${uri}`,
+                  });
+                } catch (error) {}
+              }}>
+              Share
+            </Button>
           </View>
         </View>
-      ) : !error ? (
-        <Text>Preparing preview...</Text>
       ) : (
-        <Text>Oops, this post doesn't seem to have any images</Text>
+        <View
+          style={{justifyContent: 'space-between'}}
+          testID="loading-indicator">
+          <Text style={styles.text}>Generating Preview... </Text>
+          {progress !== 0 && (
+            <ProgressBar color={'#000'} animatedValue={progress} />
+          )}
+        </View>
       )}
-    </View>
+    </GestureHandlerRootView>
   );
 };
 
 const styles = StyleSheet.create({
-  buttonContainer: {
-    marginTop: 16,
+  container: {
+    height: windowHeight * 0.6,
+    justifyContent: 'space-evenly',
+  },
+  buttonsContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'space-evenly',
   },
-  copyButton: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    flex: 1,
-    paddingLeft: 60,
+  content: {
+    height: Dimensions.get('window').height * 0.5,
   },
-  image: {
-    width: '100%',
-    height: undefined,
-    aspectRatio: 1,
-    borderRadius: 10,
+  text: {
+    paddingBottom: 8,
   },
 });
 
