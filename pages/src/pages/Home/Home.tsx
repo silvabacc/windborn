@@ -23,7 +23,7 @@ const Home: React.FC = () => {
         <img className="home-image" src={require('./images/banner.png')} />
       )}
 
-      <Collapse in={isCollapsd}>
+      <Collapse timeout={0} in={isCollapsd}>
         <div className="home-slide-container">
           <Carousel>
             <Carousel.Item>
