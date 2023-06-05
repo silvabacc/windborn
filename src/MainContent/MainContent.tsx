@@ -18,6 +18,7 @@ import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import Video from 'react-native-video';
 import {Button, ProgressBar} from 'react-native-paper';
 import {Content, ContentType} from './content/types';
+import ConversionTabs from './components/ConversionTabs';
 
 interface MainModalProps {
   intentData: ShareData;
@@ -105,23 +106,30 @@ const MainContent: React.FC<MainModalProps> = ({intentData}) => {
             data={contentUri}
             onSnapToItem={prop => (index.current = prop)}
             renderItem={({item}) => {
-              return item.type === ContentType.IMAGE ? (
-                <Image
-                  testID="carousel-image"
-                  style={styles.content}
-                  source={{
-                    uri: `file://${item.uri}`,
-                  }}
-                />
-              ) : (
-                <Video
-                  testID="carousel-video"
-                  resizeMode="cover"
-                  muted={true}
-                  repeat
-                  style={styles.content}
-                  source={{uri: `file://${item.uri}`}}
-                />
+              return (
+                <>
+                  {item.type === ContentType.IMAGE ? (
+                    <Image
+                      testID="carousel-image"
+                      style={styles.content}
+                      source={{
+                        uri: `file://${item.uri}`,
+                      }}
+                    />
+                  ) : (
+                    <>
+                      <ConversionTabs />
+                      <Video
+                        testID="carousel-video"
+                        resizeMode="cover"
+                        muted={true}
+                        repeat
+                        style={styles.content}
+                        source={{uri: `file://${item.uri}`}}
+                      />
+                    </>
+                  )}
+                </>
               );
             }}
           />
