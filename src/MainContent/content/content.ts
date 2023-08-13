@@ -36,10 +36,23 @@ export const fetchContent = async (
 ): Promise<Content[]> => {
   const redditIdRegex = /\/comments\/(\w+)\//;
 
-  const redditId = data.match(redditIdRegex);
-  if (redditId) {
+  let redditRegexResult;
+  redditRegexResult = data.match(redditIdRegex);
+
+  //We need this for the new update on Reddit
+  //New url intents use a random string instead of the reddit id
+  //e.g. https://reddit.com/r/pcmasterrace/s/X9vEHviLMw
+  //where X9vEHviLMw is random stirng everytime a post is shared
+  if (!redditRegexResult) {
+    const permalinkRegex =
+      /https:\/\/www.reddit.com\/r\/\w+\/comments\/(\w+)\//;
+    const response = await axios.get(data);
+    redditRegexResult = response.data.match(permalinkRegex);
+  }
+
+  if (redditRegexResult) {
     //Handle Reddit
-    return await redditCommentContent(redditId[1], data, onProgress);
+    return await redditCommentContent(redditRegexResult[1], data, onProgress);
   }
 
   throw new Error('Content not found');
