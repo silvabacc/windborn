@@ -18,102 +18,92 @@ jest.mock('nanoid', () => ({
 const {RAPID_SAVE_URL} = getConfig();
 
 const singleImageResponse = {
-  data: [
-    {
-      data: {
-        children: [
-          {
-            data: {
-              post_hint: 'image',
-              url: 'www.dummmy.com/image.png',
-            },
+  data: {
+    data: {
+      children: [
+        {
+          data: {
+            post_hint: 'image',
+            url: 'www.dummmy.com/image.png',
           },
-        ],
-      },
+        },
+      ],
     },
-  ],
+  },
 };
 
 const videoResponse = {
-  data: [
-    {
-      data: {
-        children: [
-          {
-            data: {
-              is_video: true,
-              post_hint: 'hosted:video',
-              url: 'www.reddit.com/123456',
-              media: {
-                reddit_video: {
-                  fallback_url: 'www.fallbackurl.com/video.mp4?source=fallback',
-                },
+  data: {
+    data: {
+      children: [
+        {
+          data: {
+            is_video: true,
+            post_hint: 'hosted:video',
+            url: 'www.reddit.com/123456',
+            media: {
+              reddit_video: {
+                fallback_url: 'www.fallbackurl.com/video.mp4?source=fallback',
               },
             },
           },
-        ],
-      },
+        },
+      ],
     },
-  ],
+  },
 };
 
 const galleryResponse = {
-  data: [
-    {
-      data: {
-        children: [
-          {
-            data: {
-              is_gallery: true,
-              media_metadata: {
-                slfz80hz7ipa1: {m: 'image/gif'},
-                y1o4u5az7ipa1: {m: 'image/jpg'},
-              },
+  data: {
+    data: {
+      children: [
+        {
+          data: {
+            is_gallery: true,
+            media_metadata: {
+              slfz80hz7ipa1: {m: 'image/gif'},
+              y1o4u5az7ipa1: {m: 'image/jpg'},
             },
           },
-        ],
-      },
+        },
+      ],
     },
-  ],
+  },
 };
 
 const errorResponse = {
-  data: [
-    {
-      data: {
-        children: [
-          {
-            data: {},
-          },
-        ],
-      },
+  data: {
+    data: {
+      children: [
+        {
+          data: {},
+        },
+      ],
     },
-  ],
+  },
 };
 
 const crosspostResponse = {
-  data: [
-    {
-      data: {
-        children: [
-          {
-            data: {
-              post_hint: 'link',
-              url: 'www.dummmy.com/crosspost',
-              is_video: false,
-              crosspost_parent_list: [
-                {
-                  post_hint: 'image',
-                  url: 'www.dummy.com/parentpost',
-                  is_video: false,
-                },
-              ],
-            },
+  data: {
+    data: {
+      children: [
+        {
+          data: {
+            post_hint: 'link',
+            url: 'www.dummmy.com/crosspost',
+            is_video: false,
+            crosspost_parent_list: [
+              {
+                post_hint: 'image',
+                url: 'www.dummy.com/parentpost',
+                is_video: false,
+              },
+            ],
           },
-        ],
-      },
+        },
+      ],
     },
-  ],
+  },
 };
 
 const mockAxios = axios as jest.Mocked<any>;
@@ -189,7 +179,7 @@ describe('Content', () => {
       await redditCommentContent('dummyId', 'redditUrl');
 
       expect(mockAxiosGet).toHaveBeenCalledWith(
-        'https://www.reddit.com/dummyId.json',
+        'https://api.reddit.com/api/info/?id=t3_dummyId',
       );
       expect(mockFetch).toHaveBeenCalledWith('GET', 'www.dummmy.com/image.png');
     });
@@ -199,7 +189,7 @@ describe('Content', () => {
       await redditCommentContent('dummyId', 'redditUrl');
 
       expect(mockAxiosGet).toHaveBeenCalledWith(
-        'https://www.reddit.com/dummyId.json',
+        'https://api.reddit.com/api/info/?id=t3_dummyId',
       );
       expect(mockFetch).toHaveBeenCalledWith(
         'GET',
@@ -213,7 +203,7 @@ describe('Content', () => {
       await redditCommentContent('dummyId', 'redditUrl');
 
       expect(mockAxiosGet).toHaveBeenCalledWith(
-        'https://www.reddit.com/dummyId.json',
+        'https://api.reddit.com/api/info/?id=t3_dummyId',
       );
       expect(mockFetch).toHaveBeenCalledWith(
         'GET',
@@ -227,7 +217,7 @@ describe('Content', () => {
       await redditCommentContent('dummyId', 'redditUrl');
 
       expect(mockAxiosGet).toHaveBeenCalledWith(
-        'https://www.reddit.com/dummyId.json',
+        'https://api.reddit.com/api/info/?id=t3_dummyId',
       );
       expect(mockFetch).toHaveBeenCalledWith(
         'GET',
@@ -240,7 +230,7 @@ describe('Content', () => {
       await redditCommentContent('dummyId', 'redditUrl');
 
       expect(mockAxiosGet).toHaveBeenCalledWith(
-        'https://www.reddit.com/dummyId.json',
+        'https://api.reddit.com/api/info/?id=t3_dummyId',
       );
       expect(mockFetch).toHaveBeenNthCalledWith(
         8,
@@ -259,7 +249,7 @@ describe('Content', () => {
       await redditCommentContent('dummyId', 'redditUrl');
 
       expect(mockAxiosGet).toHaveBeenCalledWith(
-        'https://www.reddit.com/dummyId.json',
+        'https://api.reddit.com/api/info/?id=t3_dummyId',
       );
       expect(mockFetch).toHaveBeenCalledWith('GET', 'www.dummy.com/parentpost');
     });
