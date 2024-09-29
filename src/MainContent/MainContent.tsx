@@ -18,6 +18,7 @@ import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import Video from 'react-native-video';
 import {Button, ProgressBar} from 'react-native-paper';
 import {Content, ContentType} from './content/types';
+import AnimatedEllipsis from './AnimatedEllipsis';
 
 interface MainModalProps {
   intentData: ShareData;
@@ -34,7 +35,7 @@ const MainContent: React.FC<MainModalProps> = ({intentData}) => {
   const index = useRef(0);
   const [error, setError] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
-  const [progress, setProgress] = useState<number>(0.1);
+  const [progress, setProgress] = useState<number>(0);
 
   const appState = useRef(AppState.currentState);
 
@@ -161,8 +162,12 @@ const MainContent: React.FC<MainModalProps> = ({intentData}) => {
         <View
           style={{justifyContent: 'space-between'}}
           testID="loading-indicator">
-          <Text style={styles.text}>Generating Preview... </Text>
-          <ProgressBar color={'#000'} animatedValue={progress} />
+          <Text style={styles.text}>Generating Preview</Text>
+          {progress !== 0 ? (
+            <AnimatedEllipsis />
+          ) : (
+            <ProgressBar color={'#000'} animatedValue={progress} />
+          )}
         </View>
       )}
     </GestureHandlerRootView>
@@ -182,6 +187,7 @@ const styles = StyleSheet.create({
     height: Dimensions.get('window').height * 0.5,
   },
   text: {
+    color: 'black',
     paddingBottom: 8,
   },
 });
