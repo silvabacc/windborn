@@ -166,15 +166,16 @@ export const redditCommentContent = async (
   permalink: string,
   onProgress?: Function,
 ): Promise<Content[]> => {
-  const redditCommentJson = `https://www.reddit.com/${id}.json`;
-  const response = await axios.get<RedditResponse[]>(redditCommentJson);
+  const redditCommentJson = `https://api.reddit.com/api/info/?id=t3_${id}`;
+  const response = await axios.get<RedditResponse>(redditCommentJson);
 
   //Supports Crossposts
-  const listingData = response.data[0].data.children[0].data;
+  const listingData = response.data.data.children[0].data;
+
   const contentData =
     listingData.post_hint === 'link'
-      ? response.data[0].data.children[0].data.crosspost_parent_list![0]
-      : response.data[0].data.children[0].data;
+      ? response.data.data.children[0].data.crosspost_parent_list![0]
+      : response.data.data.children[0].data;
 
   const {is_video, is_gallery, post_hint} = contentData;
 

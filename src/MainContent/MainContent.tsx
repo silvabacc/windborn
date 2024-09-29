@@ -34,7 +34,7 @@ const MainContent: React.FC<MainModalProps> = ({intentData}) => {
   const index = useRef(0);
   const [error, setError] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
-  const [progress, setProgress] = useState<number>(0);
+  const [progress, setProgress] = useState<number>(0.1);
 
   const appState = useRef(AppState.currentState);
 
@@ -162,9 +162,7 @@ const MainContent: React.FC<MainModalProps> = ({intentData}) => {
           style={{justifyContent: 'space-between'}}
           testID="loading-indicator">
           <Text style={styles.text}>Generating Preview... </Text>
-          {progress !== 0 && (
-            <ProgressBar color={'#000'} animatedValue={progress} />
-          )}
+          <ProgressBar color={'#000'} animatedValue={progress} />
         </View>
       )}
     </GestureHandlerRootView>
